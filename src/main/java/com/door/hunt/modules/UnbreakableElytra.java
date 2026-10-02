@@ -29,18 +29,12 @@ extends Module {
     private final Setting<Integer> b;
     private final Setting<Integer> c;
     private int d;
-    static Object f;
-    static Object g;
-    static Object e;
-    static Object h;
-    static Object i;
-    static Object j;
 
     public UnbreakableElytra() {
-        super(AddonTemplate.CATEGORY, "\u9798\u7fc5\u8010\u4e45\u4fdd\u62a4", (String)"\u65e0\u9650\u8010\u4e45\u9798\u7fc5\uff1a\u6ed1\u7fd4\u671f\u95f4\u5468\u671f\u68c0\u67e5\u80f8\u7532\u9798\u7fc5\u8010\u4e45\uff0c\u4f4e\u4e8e\u9608\u503c\u81ea\u52a8\u6362\u80cc\u5305\u91cc\u7684\u65b0\u9798\u7fc5\u3002");
+        super(AddonTemplate.CATEGORY, "鞘翅耐久保护", (String)"无限耐久鞘翅：滑翔期间周期检查胸甲鞘翅耐久，低于阈值自动换背包里的新鞘翅。");
         this.a = this.settings.getDefaultGroup();
-        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u4fdd\u62a4\u5468\u671f")).description((String)"\u65e0\u9650\u8010\u4e45\u68c0\u67e5\u5468\u671f (tick)\u3002")).defaultValue(16)).range(1, 200).build());
-        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u8010\u4e45\u9608\u503c")).description((String)"\u9798\u7fc5\u8010\u4e45\u4f4e\u4e8e\u6b64\u503c (\u5269\u4f59\u8010\u4e45) \u65f6\u5207\u6362\u3002\u9798\u7fc5\u603b\u8010\u4e45 432\u3002")).defaultValue(100)).range(1, 431).build());
+        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("保护周期")).description((String)"无限耐久检查周期 (tick)。")).defaultValue(16)).range(1, 200).build());
+        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("耐久阈值")).description((String)"鞘翅耐久低于此值 (剩余耐久) 时切换。鞘翅总耐久 432。")).defaultValue(100)).range(1, 431).build());
         this.d = 0;
     }
 
@@ -73,7 +67,7 @@ extends Module {
         int elytraSlot = this.b();
         if (elytraSlot != -1) {
             InvUtils.move().from(elytraSlot).toArmor(2);
-            this.info("\u65e0\u9650\u8010\u4e45: \u5df2\u6362\u4e0a\u80cc\u5305\u91cc\u7684\u65b0\u9798\u7fc5 (\u69fd " + elytraSlot + ")\u3002", new Object[0]);
+            this.info("无限耐久: 已换上背包里的新鞘翅 (槽 " + elytraSlot + ")。", new Object[0]);
         }
     }
 

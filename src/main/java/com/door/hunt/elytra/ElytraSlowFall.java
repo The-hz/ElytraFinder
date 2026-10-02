@@ -21,9 +21,9 @@ implements LegalMovementManager.MovementModifier {
     private final Setting<Boolean> enable;
 
     public ElytraSlowFall() {
-        super(AddonTemplate.CATEGORY, "\u9798\u7fc5\u7f13\u964d", "\u9798\u7fc5\u7f13\u964d\uff1a\u5e73\u89c6 + \u4ea4\u66ff\u7ffb\u8f6c\u62b5\u6d88\u6c34\u5e73\u901f\u5ea6\u3002");
+        super(AddonTemplate.CATEGORY, "鞘翅缓降", "鞘翅缓降：平视 + 交替翻转抵消水平速度。");
         this.sgGeneral = this.settings.getDefaultGroup();
-        this.enable = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("enable")).description("\u542f\u7528\u9798\u7fc5\u7f13\u964d\u3002")).defaultValue(false)).build());
+        this.enable = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("enable")).description("启用鞘翅缓降。")).defaultValue(false)).build());
         INSTANCE = this;
     }
 

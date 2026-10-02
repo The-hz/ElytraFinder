@@ -13,7 +13,7 @@ import net.minecraft.command.CommandSource;
 public class CommandExample
 extends Command {
     public CommandExample() {
-        super("example", "\u53d1\u9001\u4e00\u6761\u6d88\u606f\u3002", new String[0]);
+        super("example", "发送一条消息。", new String[0]);
     }
 
     public void build(LiteralArgumentBuilder<CommandSource> builder) {

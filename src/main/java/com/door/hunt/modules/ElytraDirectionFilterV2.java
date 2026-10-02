@@ -18,7 +18,7 @@ public final class ElytraDirectionFilterV2 {
         }
         int n3 = list.size();
         if (n3 == 0) {
-            System.out.println("[Elytra Finder] \u65b9\u5411\u8fc7\u6ee4: \u539f\u59cb\u5019\u9009=0");
+            System.out.println("[Elytra Finder] 方向过滤: 原始候选=0");
             return;
         }
         try {
@@ -43,10 +43,10 @@ public final class ElytraDirectionFilterV2 {
                 if (bl5) continue;
                 iterator.remove();
             }
-            System.out.println("[Ying] \u65b9\u5411\u8fc7\u6ee4: \u539f\u59cb\u5019\u9009=" + n3 + ", \u4fdd\u7559=" + list.size() + ", \u57fa\u51c6X=" + n + ", Z=" + n2 + ", \u5317=" + bl + ", \u5357=" + bl2 + ", \u4e1c=" + bl3 + ", \u897f=" + bl4);
+            System.out.println("[Ying] 方向过滤: 原始候选=" + n3 + ", 保留=" + list.size() + ", 基准X=" + n + ", Z=" + n2 + ", 北=" + bl + ", 南=" + bl2 + ", 东=" + bl3 + ", 西=" + bl4);
         }
         catch (Throwable throwable) {
-            System.out.println("[Ying] \u65b9\u5411\u8fc7\u6ee4\u5f02\u5e38\uff0c\u4fdd\u7559\u5f53\u524d\u5019\u9009: " + String.valueOf(throwable));
+            System.out.println("[Ying] 方向过滤异常，保留当前候选: " + String.valueOf(throwable));
         }
     }
 

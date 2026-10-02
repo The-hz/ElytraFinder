@@ -73,10 +73,10 @@ public final class ElytraSearchFallback {
                     if (list.size() > n16) break;
                 }
             }
-            System.out.println("[Ying] \u641c\u8239\u4fee\u590d\u56de\u9000(Test32): seed=" + l + ", \u57fa\u51c6=(" + n + "," + n2 + "), \u8bf7\u6c42\u8303\u56f4=" + n3 + ", \u5b9e\u9645\u6269\u5c55\u8303\u56f4=" + n9 + ", \u6709\u8239=" + n4 + ", \u53ef\u6784\u9020\u76ee\u6807=" + n5 + ", \u672c\u6b21\u6392\u9664=" + n6 + ", \u5df2\u8bbf\u95ee\u6392\u9664=" + n7 + ", \u6062\u590d\u5019\u9009=" + list.size() + ", \u5355\u70b9\u5f02\u5e38=" + n8);
+            System.out.println("[Ying] 搜船修复回退(Test32): seed=" + l + ", 基准=(" + n + "," + n2 + "), 请求范围=" + n3 + ", 实际扩展范围=" + n9 + ", 有船=" + n4 + ", 可构造目标=" + n5 + ", 本次排除=" + n6 + ", 已访问排除=" + n7 + ", 恢复候选=" + list.size() + ", 单点异常=" + n8);
         }
         catch (Throwable throwable) {
-            System.out.println("[Ying] \u641c\u8239\u4fee\u590d\u56de\u9000(Test32)\u5f02\u5e38: " + String.valueOf(throwable));
+            System.out.println("[Ying] 搜船修复回退(Test32)异常: " + String.valueOf(throwable));
         }
     }
 

@@ -19,11 +19,11 @@ public final class ElytraFinderStatus22 {
             double d;
             String string;
             if (object == null) {
-                return new String[]{"\u72b6\u6001\uff1a\u6a21\u5757\u672a\u52a0\u8f7d"};
+                return new String[]{"状态：模块未加载"};
             }
             boolean bl = ElytraFinderStatus22.invokeBooleanPublic(object, "isActive", false);
             if (!bl) {
-                return new String[]{"\u72b6\u6001\uff1a\u672a\u542f\u7528", "\u5df2\u8bbf\u95ee\uff1a" + ElytraFinderStatus22.visitedCount(object) + "   \u672c\u6b21\u9ed1\u540d\u5355\uff1a" + ElytraFinderStatus22.blacklistCount(object)};
+                return new String[]{"状态：未启用", "已访问：" + ElytraFinderStatus22.visitedCount(object) + "   本次黑名单：" + ElytraFinderStatus22.blacklistCount(object)};
             }
             String string2 = String.valueOf(ElytraFinderStatus22.getField(object, "x"));
             String string3 = ElytraApproachSafety22.status(object);
@@ -32,27 +32,27 @@ public final class ElytraFinderStatus22 {
             boolean bl3 = ElytraFinderStatus22.getBoolean(object, "aj", false);
             if (bl2) {
                 string = switch (n) {
-                    case 0 -> "\u8239\u5e95\u5b89\u5168\u9003\u9038";
-                    case 1 -> "\u8239\u5916\u5b89\u5168\u722c\u5347";
-                    case 2 -> "\u5b89\u5168\u91cd\u65b0\u8fdb\u8fd1";
-                    default -> "\u5b89\u5168\u590d\u98de";
+                    case 0 -> "船底安全逃逸";
+                    case 1 -> "船外安全爬升";
+                    case 2 -> "安全重新进近";
+                    default -> "安全复飞";
                 };
             } else if (string3 != null) {
                 string = string3;
             } else {
                 string = switch (string2) {
-                    case "IDLE" -> "\u5f85\u673a";
-                    case "SEARCHING" -> "\u641c\u7d22\u672b\u5730\u8239";
-                    case "RISING" -> "\u722c\u5347";
+                    case "IDLE" -> "待机";
+                    case "SEARCHING" -> "搜索末地船";
+                    case "RISING" -> "爬升";
                     case "FLYING" -> {
                         if (bl3) {
-                            yield "\u722c\u5347";
+                            yield "爬升";
                         }
-                        yield "\u6ed1\u7fd4";
+                        yield "滑翔";
                     }
-                    case "LANDING" -> "\u964d\u843d";
-                    case "COLLECTING" -> "\u6536\u96c6\u9798\u7fc5";
-                    case "DONE" -> "\u5b8c\u6210";
+                    case "LANDING" -> "降落";
+                    case "COLLECTING" -> "收集鞘翅";
+                    case "DONE" -> "完成";
                     default -> string2;
                 };
             }
@@ -62,7 +62,7 @@ public final class ElytraFinderStatus22 {
             int n2 = ElytraFinderStatus22.getSettingInt(object, "h", 0);
             int n3 = ElytraFinderStatus22.getSettingInt(object, "i", 0);
             Object object4 = ElytraFinderStatus22.getTarget(object);
-            Object object5 = "\u65e0";
+            Object object5 = "无";
             String string4 = "--";
             if (object3 != null && object4 != null) {
                 int n4 = ElytraFinderStatus22.invokeInt(object4, "getX", 0);
@@ -72,27 +72,27 @@ public final class ElytraFinderStatus22 {
                 d = ElytraFinderStatus22.invokeDouble(object3, "getX", 0.0);
                 double d3 = ElytraFinderStatus22.invokeDouble(object3, "getZ", 0.0);
                 double d4 = Math.hypot(d - ((double)n4 + 0.5), d3 - ((double)n6 + 0.5));
-                string4 = String.format(Locale.ROOT, "%.1f \u683c", d4);
+                string4 = String.format(Locale.ROOT, "%.1f 格", d4);
             }
             ArrayList<Object> arrayList = new ArrayList<Object>();
-            arrayList.add("\u72b6\u6001\uff1a" + string + "\t\u8ddd\u79bb\uff1a" + string4);
-            arrayList.add("\u76ee\u6807\uff1a" + (String)object5 + "\t");
+            arrayList.add("状态：" + string + "\t距离：" + string4);
+            arrayList.add("目标：" + (String)object5 + "\t");
             if (!Double.isNaN(d2)) {
-                arrayList.add(String.format(Locale.ROOT, "\u5de1\u822a\u8303\u56f4\uff1a%d\uff5e%d \u683c\t\u9ad8\u5ea6\uff1a%.1f \u683c", n2, n3, d2));
+                arrayList.add(String.format(Locale.ROOT, "巡航范围：%d～%d 格\t高度：%.1f 格", n2, n3, d2));
             } else {
-                arrayList.add(String.format(Locale.ROOT, "\u5de1\u822a\u8303\u56f4\uff1a%d\uff5e%d \u683c\t\u9ad8\u5ea6\uff1a--", n2, n3));
+                arrayList.add(String.format(Locale.ROOT, "巡航范围：%d～%d 格\t高度：--", n2, n3));
             }
             double d5 = ElytraApproachSafety22.safeHeight(object);
             d = ElytraApproachSafety22.predictedHeight(object);
             if (!Double.isNaN(d5) && string3 != null) {
-                arrayList.add(String.format(Locale.ROOT, "\u8239\u4f53\u5b89\u5168\u9ad8\u5ea6\uff1a%.1f \u683c", d5));
-                arrayList.add(String.format(Locale.ROOT, "\u9884\u6d4b\u5230\u8fbe\u9ad8\u5ea6\uff1a%.1f \u683c", d));
+                arrayList.add(String.format(Locale.ROOT, "船体安全高度：%.1f 格", d5));
+                arrayList.add(String.format(Locale.ROOT, "预测到达高度：%.1f 格", d));
             }
-            arrayList.add("\u5df2\u8bbf\u95ee\uff1a" + ElytraFinderStatus22.visitedCount(object) + "   \u672c\u6b21\u9ed1\u540d\u5355\uff1a" + ElytraFinderStatus22.blacklistCount(object));
+            arrayList.add("已访问：" + ElytraFinderStatus22.visitedCount(object) + "   本次黑名单：" + ElytraFinderStatus22.blacklistCount(object));
             return (String[])arrayList.toArray(String[]::new);
         }
         catch (Throwable throwable) {
-            return new String[]{"\u72b6\u6001\uff1a\u8bfb\u53d6\u5931\u8d25", "\u539f\u56e0\uff1a" + throwable.getClass().getSimpleName()};
+            return new String[]{"状态：读取失败", "原因：" + throwable.getClass().getSimpleName()};
         }
     }
 

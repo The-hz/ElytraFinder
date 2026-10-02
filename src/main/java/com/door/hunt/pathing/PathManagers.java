@@ -19,16 +19,16 @@ public class PathManagers {
         if (BaritonePathManager.isAvailable()) {
             try {
                 instance = new BaritonePathManager();
-                ChatUtils.info("[Elytra Finder] Baritone \u5df2\u8fde\u63a5\uff0c\u9632\u5361\u4f4f\u5bfb\u8def\u53ef\u7528\u3002");
-                ChatUtils.warning("[Elytra Finder] Baritone \u5df2\u8fde\u63a5\uff0c\u9632\u5361\u4f4f\u5bfb\u8def\u53ef\u7528\u3002");
+                ChatUtils.info("[Elytra Finder] Baritone 已连接，防卡住寻路可用。");
+                ChatUtils.warning("[Elytra Finder] Baritone 已连接，防卡住寻路可用。");
             }
             catch (Throwable e) {
-                ChatUtils.info("[Ying] Baritone \u521d\u59cb\u5316\u5931\u8d25: " + String.valueOf(e));
-                ChatUtils.warning("[Ying] Baritone \u521d\u59cb\u5316\u5931\u8d25: " + String.valueOf(e));
+                ChatUtils.info("[Ying] Baritone 初始化失败: " + String.valueOf(e));
+                ChatUtils.warning("[Ying] Baritone 初始化失败: " + String.valueOf(e));
             }
         } else {
-            ChatUtils.info("[Elytra Finder] \u672a\u68c0\u6d4b\u5230 Baritone\uff0c\u9632\u5361\u4f4f\u5bfb\u8def\u4e0d\u53ef\u7528\u3002");
-            ChatUtils.warning("[Elytra Finder] \u672a\u68c0\u6d4b\u5230 Baritone\uff0c\u9632\u5361\u4f4f\u5bfb\u8def\u4e0d\u53ef\u7528\u3002");
+            ChatUtils.info("[Elytra Finder] 未检测到 Baritone，防卡住寻路不可用。");
+            ChatUtils.warning("[Elytra Finder] 未检测到 Baritone，防卡住寻路不可用。");
         }
     }
 }

@@ -52,16 +52,16 @@ extends Module {
     private int intervalCounter;
 
     public ElytraJump() {
-        super(AddonTemplate.CATEGORY, "\u9798\u7fc5\u8df3\u8dc3", "\u9798\u7fc5\u8df3\u8dc3\uff1a\u6a21\u5757\u5f00\u542f\u5373\u81ea\u52a8\u8d77\u8df3\u5e76\u5c55\u5f00\u9798\u7fc5 (\u9644\u9632\u5361\u4f4f\u5bfb\u8def)\u3002");
+        super(AddonTemplate.CATEGORY, "鞘翅跳跃", "鞘翅跳跃：模块开启即自动起跳并展开鞘翅 (附防卡住寻路)。");
         this.sgGeneral = this.settings.getDefaultGroup();
-        this.conditionalSprint = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u6761\u4ef6\u75be\u8dd1")).description("\u6761\u4ef6\u75be\u8dd1 (\u9884\u7559)\u3002")).defaultValue(false)).build());
-        this.pitch = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u4fef\u4ef0\u89d2")).description("\u8d77\u98de\u62ac\u5934\u4fef\u4ef0\u89d2\u3002")).defaultValue(75.0).min(0.0).max(90.0).build());
-        this.sneak = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u6f5c\u884c")).description("\u8d77\u98de\u65f6\u6f5c\u884c\u3002")).defaultValue(false)).build());
-        this.groundHeight = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u79bb\u5730\u9ad8\u5ea6")).description("\u811a\u4e0b\u591a\u5c11\u683c\u5185\u6709\u5730\u9762\u65f6\u624d\u5de5\u4f5c (\u907f\u514d\u9ad8\u7a7a\u8bef\u89e6\u53d1)\u3002")).defaultValue(3.0).min(1.0).sliderMax(20.0).build());
-        this.antiStuck = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u9632\u5361\u4f4f")).description("\u9632\u6b62\u5361\u4f4f\uff1a\u68c0\u6d4b\u5230\u8fde\u7eed\u4e24\u6b21\u68c0\u6d4b\u5728\u540c\u4e00\u4f4d\u7f6e\u65f6\u7528 Baritone \u5bfb\u8def\u7ed5\u5f00\u3002")).defaultValue(false)).build());
-        this.antiStuckInterval = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u9632\u5361\u68c0\u6d4b\u95f4\u9694")).description("\u9632\u5361\u4f4f\u68c0\u6d4b\u95f4\u9694 (tick)\u3002")).defaultValue(20)).range(2, 200).build());
-        this.antiStuckOffset = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u9632\u5361\u4f4d\u79fb")).description("\u9632\u5361\u4f4f\u76ee\u6807\u70b9\u504f\u79fb (\u6cbf\u8fd0\u52a8\u65b9\u5411\uff0c\u65b9\u5757)\u3002")).defaultValue(4.0).min(1.0).sliderMax(30.0).build());
-        this.antiStuckResumeTicks = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u9632\u5361\u6062\u590d\u5ef6\u8fdf")).description("\u89e6\u53d1\u540e\u7b49\u5f85\u591a\u5c11 tick \u6062\u590d\u9798\u7fc5\u8df3\u8dc3 (baritone \u5bfb\u8def\u671f\u95f4\u4fdd\u6301\u6682\u505c\uff0c\u5bfb\u8def\u901a\u5e38\u5728\u6b64\u65f6\u95f4\u5185\u5b8c\u6210)\u3002")).defaultValue(80)).range(10, 600).build());
+        this.conditionalSprint = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("条件疾跑")).description("条件疾跑 (预留)。")).defaultValue(false)).build());
+        this.pitch = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("俯仰角")).description("起飞抬头俯仰角。")).defaultValue(75.0).min(0.0).max(90.0).build());
+        this.sneak = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("潜行")).description("起飞时潜行。")).defaultValue(false)).build());
+        this.groundHeight = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("离地高度")).description("脚下多少格内有地面时才工作 (避免高空误触发)。")).defaultValue(3.0).min(1.0).sliderMax(20.0).build());
+        this.antiStuck = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("防卡住")).description("防止卡住：检测到连续两次检测在同一位置时用 Baritone 寻路绕开。")).defaultValue(false)).build());
+        this.antiStuckInterval = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("防卡检测间隔")).description("防卡住检测间隔 (tick)。")).defaultValue(20)).range(2, 200).build());
+        this.antiStuckOffset = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("防卡位移")).description("防卡住目标点偏移 (沿运动方向，方块)。")).defaultValue(4.0).min(1.0).sliderMax(30.0).build());
+        this.antiStuckResumeTicks = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("防卡恢复延迟")).description("触发后等待多少 tick 恢复鞘翅跳跃 (baritone 寻路期间保持暂停，寻路通常在此时间内完成)。")).defaultValue(80)).range(10, 600).build());
         this.workThisTick = false;
         this.lastFallFly = false;
         this.savedPitch = 0.0f;
@@ -84,7 +84,7 @@ extends Module {
         this.baritonePaused = false;
         this.checkHistory.clear();
         this.intervalCounter = 0;
-        this.info("\u9798\u7fc5\u8df3\u8dc3\u5df2\u542f\u7528\u3002", new Object[0]);
+        this.info("鞘翅跳跃已启用。", new Object[0]);
     }
 
     public void onDeactivate() {
@@ -197,11 +197,11 @@ extends Module {
                     this.arrivedWaitTick = -1;
                     this.checkHistory.clear();
                     this.intervalCounter = 0;
-                    this.info("\u9632\u5361\u4f4f: \u5df2\u5230\u8fbe\u5bfb\u8def\u5750\u6807\uff0c\u6062\u590d\u9798\u7fc5\u8df3\u8dc3\u3002", new Object[0]);
+                    this.info("防卡住: 已到达寻路坐标，恢复鞘翅跳跃。", new Object[0]);
                 }
             } else if (this.lastTarget != null && Math.hypot(dx = this.mc.player.getX() - ((double)this.lastTarget.getX() + 0.5), dz = this.mc.player.getZ() - ((double)this.lastTarget.getZ() + 0.5)) < 2.0) {
                 this.arrivedWaitTick = 0;
-                this.info("\u9632\u5361\u4f4f: \u5df2\u5230\u8fbe\u5bfb\u8def\u5750\u6807\uff0c10 tick \u540e\u6062\u590d\u9798\u7fc5\u8df3\u8dc3\u3002", new Object[0]);
+                this.info("防卡住: 已到达寻路坐标，10 tick 后恢复鞘翅跳跃。", new Object[0]);
             }
             if (this.stuckTimeoutTick <= 0) {
                 this.baritonePaused = false;
@@ -209,7 +209,7 @@ extends Module {
                 this.arrivedWaitTick = -1;
                 this.checkHistory.clear();
                 this.intervalCounter = 0;
-                this.info("\u9632\u5361\u4f4f: \u5bfb\u8def\u8d85\u65f6\uff0c\u6062\u590d\u9798\u7fc5\u8df3\u8dc3\u3002", new Object[0]);
+                this.info("防卡住: 寻路超时，恢复鞘翅跳跃。", new Object[0]);
             }
             return;
         }
@@ -259,7 +259,7 @@ extends Module {
         if (this.mc.player.isGliding()) {
             this.mc.player.stopGliding();
         }
-        this.info("\u9632\u5361\u4f4f: \u68c0\u6d4b\u5230\u5361\u4f4f\uff0c\u6682\u505c\u9798\u7fc5\u8df3\u8dc3\u5e76\u843d\u5730\uff0cBaritone \u5bfb\u8def\u5230 " + String.valueOf(p), new Object[0]);
+        this.info("防卡住: 检测到卡住，暂停鞘翅跳跃并落地，Baritone 寻路到 " + String.valueOf(p), new Object[0]);
         PathManagers.get().moveTo(p, false);
     }
 }

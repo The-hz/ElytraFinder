@@ -40,22 +40,14 @@ extends Module {
     private boolean f;
     private int g;
     private int h;
-    static Object j;
-    static Object k;
-    static Object i;
-    static Object l;
-    static Object m;
-    static Object n;
-    static Object o;
-    static Object p;
 
     public PullUp() {
-        super(AddonTemplate.CATEGORY, "\u7d27\u6025\u62c9\u5347", (String)"\u4f4e\u4e8e\u8bbe\u5b9a Y \u503c\u65f6\u65e0\u6761\u4ef6\u5f3a\u5236\u62c9\u5347 (\u62ac\u5934 + \u70df\u82b1)\uff0c\u5347\u5230\u5b89\u5168\u9ad8\u5ea6\u81ea\u52a8\u505c\u6b62.");
+        super(AddonTemplate.CATEGORY, "紧急拉升", (String)"低于设定 Y 值时无条件强制拉升 (抬头 + 烟花)，升到安全高度自动停止.");
         this.a = this.settings.getDefaultGroup();
-        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u5371\u9669 Y \u9ad8\u5ea6")).description((String)"\u5371\u9669\u9ad8\u5ea6\uff1a\u4f4e\u4e8e\u6b64 Y \u65f6\u65e0\u6761\u4ef6\u5f3a\u5236\u62c9\u5347 (\u91c7\u96c6\u5668\u964d\u843d/\u964d\u843d\u6062\u590d\u671f\u95f4\u9664\u5916).")).defaultValue(40)).range(30, 300).sliderRange(30, 260).build());
-        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u76ee\u6807 Y \u9ad8\u5ea6")).description((String)"\u62c9\u5347\u76ee\u6807\u9ad8\u5ea6\uff1a\u8fbe\u5230\u6b64 Y \u540e\u505c\u6b62\u62c9\u5347.")).defaultValue(70)).range(30, 500).sliderRange(50, 500).build());
-        this.d = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u62c9\u5347\u4fef\u4ef0\u89d2")).description((String)"\u62c9\u5347\u65f6\u62ac\u5934\u7684\u4fef\u4ef0\u89d2 (\u8d1f\u503c=\u62ac\u5934\uff1b\u9ed8\u8ba4\u5f57\u661f pitch40 \u89d2\u5ea6 37.72\u00b0).")).defaultValue(-37.72).min(-90.0).max(-10.0).sliderMin(-80.0).sliderMax(-20.0).build());
-        this.e = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u70df\u82b1\u95f4\u9694")).description((String)"\u62c9\u5347\u671f\u95f4\u6bcf\u9694\u8fd9\u4e48\u591a\u79d2\u4f7f\u7528\u4e00\u4e2a\u70df\u82b1\u52a0\u901f (\u79d2).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
+        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("危险 Y 高度")).description((String)"危险高度：低于此 Y 时无条件强制拉升 (采集器降落/降落恢复期间除外).")).defaultValue(40)).range(30, 300).sliderRange(30, 260).build());
+        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("目标 Y 高度")).description((String)"拉升目标高度：达到此 Y 后停止拉升.")).defaultValue(70)).range(30, 500).sliderRange(50, 500).build());
+        this.d = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("拉升俯仰角")).description((String)"拉升时抬头的俯仰角 (负值=抬头；默认彗星 pitch40 角度 37.72°).")).defaultValue(-37.72).min(-90.0).max(-10.0).sliderMin(-80.0).sliderMax(-20.0).build());
+        this.e = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"拉升期间每隔这么多秒使用一个烟花加速 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
         this.f = false;
         this.g = 0;
         this.h = 0;
@@ -96,12 +88,12 @@ extends Module {
                 if (collector != null) {
                     collector.setPullUpSuppressed(false);
                 }
-                this.info((String)"\u5df2\u5347\u5230\u76ee\u6807\u9ad8\u5ea6\uff0c\u505c\u6b62\u62c9\u5347.", new Object[0]);
+                this.info((String)"已升到目标高度，停止拉升.", new Object[0]);
             }
         } else if (this.mc.player.getY() < (double)((Integer)this.b.get()).intValue()) {
             this.f = true;
             this.h = -((int)Math.max(1L, Math.round((Double)this.e.get() * 20.0)));
-            this.info("\u5371\u9669\u9ad8\u5ea6: \u4f4e\u4e8e " + String.valueOf(this.b.get()) + "\uff0c\u5f3a\u5236\u62c9\u5347.", new Object[0]);
+            this.info("危险高度: 低于 " + String.valueOf(this.b.get()) + "，强制拉升.", new Object[0]);
             if (collector != null) {
                 collector.abortStorageForPullUp();
                 collector.setPullUpSuppressed(true);
@@ -135,7 +127,7 @@ extends Module {
             FindItemResult inv = InvUtils.find((Item[])new Item[]{Items.FIREWORK_ROCKET});
             if (inv.found()) {
                 InvUtils.move().from(inv.slot()).toHotbar(1);
-                this.info((String)"\u7269\u54c1\u680f\u6ca1\u6709\u70df\u82b1\uff0c\u4ece\u80cc\u5305\u8c03\u53d6\u653e\u5230\u7b2c 2 \u4e2a\u69fd\u4f4d.", new Object[0]);
+                this.info((String)"物品栏没有烟花，从背包调取放到第 2 个槽位.", new Object[0]);
             }
             return;
         }

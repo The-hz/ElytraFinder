@@ -36,27 +36,19 @@ extends Module {
     private final Setting<Boolean> h;
     private final Setting<Boolean> i;
     private final Setting<Double> j;
-    static Object l;
-    static Object m;
-    static Object n;
-    static Object o;
-    static Object p;
-    static Object k;
-    static Object q;
-    static Object r;
 
     public SearchControl() {
-        super(AddonTemplate.CATEGORY, "\u641c\u7d22\u63a7\u5236", (String)"\u641c\u7d22\u89c6\u89d2\u63a7\u5236\uff1a\u4ee5\u4e2d\u5fc3\u70b9\u4e3a\u4e2d\u5fc3\u6309\u77e9\u5f62/\u5706\u5f62/\u87ba\u65cb\u8f68\u8ff9\u81ea\u52a8\u8f6c\u5934\u5de1\u903b.");
+        super(AddonTemplate.CATEGORY, "搜索控制", (String)"搜索视角控制：以中心点为中心按矩形/圆形/螺旋轨迹自动转头巡逻.");
         this.a = this.settings.getDefaultGroup();
-        this.b = this.a.add((Setting)((EnumSetting.Builder)((EnumSetting.Builder)((EnumSetting.Builder)new EnumSetting.Builder().name("\u6a21\u5f0f")).description((String)"\u5de1\u903b\u6a21\u5f0f\uff1a\u77e9\u5f62 / \u5706\u5f62 / \u87ba\u65cb.")).defaultValue(Mode.SPIRAL)).build());
-        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u4e2d\u5fc3 X")).description((String)"\u5de1\u903b\u4e2d\u5fc3 X \u5750\u6807 (\u65b9\u5757).")).defaultValue(0)).build());
-        this.d = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u4e2d\u5fc3 Z")).description((String)"\u5de1\u903b\u4e2d\u5fc3 Z \u5750\u6807 (\u65b9\u5757).")).defaultValue(0)).build());
-        this.e = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u77e9\u5f62\u8303\u56f4")).description((String)"\u77e9\u5f62\u5de1\u903b\u8fb9\u957f (\u65b9\u5757).")).defaultValue(192.0).min(0.0).build());
-        this.f = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u5706\u5f62\u8303\u56f4")).description((String)"\u5706\u5f62\u5de1\u903b\u534a\u5f84 (\u65b9\u5757).")).defaultValue(192.0).min(0.0).build());
-        this.g = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u87ba\u65cb\u8303\u56f4")).description((String)"\u87ba\u65cb\u5de1\u903b\u87ba\u8ddd (\u65b9\u5757).")).defaultValue(32.0).min(0.0).build());
-        this.h = this.a.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u6309 WASD \u4e2d\u6b62")).description((String)"\u73a9\u5bb6\u6709 WASD \u8f93\u5165\u65f6\u6682\u505c\u5de1\u903b.")).defaultValue(false)).build());
-        this.i = this.a.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u4ec5\u98de\u884c\u65f6\u542f\u7528")).description((String)"\u4ec5\u9798\u7fc5\u6ed1\u7fd4\u65f6\u751f\u6548\uff0c\u975e\u6ed1\u7fd4\u72b6\u6001\u4e0d\u8f6c\u5934.")).defaultValue(false)).build());
-        this.j = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u6700\u5927\u8ddd\u79bb")).description((String)"\u79bb\u4e2d\u5fc3\u8d85\u8fc7\u6b64\u8ddd\u79bb\u65f6\u505c\u6b62\u5de1\u903b (\u65b9\u5757).")).defaultValue(300000.0).min(0.0).build());
+        this.b = this.a.add((Setting)((EnumSetting.Builder)((EnumSetting.Builder)((EnumSetting.Builder)new EnumSetting.Builder().name("模式")).description((String)"巡逻模式：矩形 / 圆形 / 螺旋.")).defaultValue(Mode.SPIRAL)).build());
+        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("中心 X")).description((String)"巡逻中心 X 坐标 (方块).")).defaultValue(0)).build());
+        this.d = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("中心 Z")).description((String)"巡逻中心 Z 坐标 (方块).")).defaultValue(0)).build());
+        this.e = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("矩形范围")).description((String)"矩形巡逻边长 (方块).")).defaultValue(192.0).min(0.0).build());
+        this.f = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("圆形范围")).description((String)"圆形巡逻半径 (方块).")).defaultValue(192.0).min(0.0).build());
+        this.g = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("螺旋范围")).description((String)"螺旋巡逻螺距 (方块).")).defaultValue(32.0).min(0.0).build());
+        this.h = this.a.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("按 WASD 中止")).description((String)"玩家有 WASD 输入时暂停巡逻.")).defaultValue(false)).build());
+        this.i = this.a.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("仅飞行时启用")).description((String)"仅鞘翅滑翔时生效，非滑翔状态不转头.")).defaultValue(false)).build());
+        this.j = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("最大距离")).description((String)"离中心超过此距离时停止巡逻 (方块).")).defaultValue(300000.0).min(0.0).build());
     }
 
     public void onActivate() {

@@ -36,7 +36,7 @@ public class VItem {
             return true;
         }
         String name = stack.getName().getString();
-        return name.contains("Spear") || name.contains("\u77db");
+        return name.contains("Spear") || name.contains("矛");
     }
 
     public boolean isWeapon(ItemStack stack) {

@@ -38,7 +38,7 @@ public final class StorageReturn {
             }
         }
         catch (Throwable throwable) {
-            System.err.println("[Elytra Finder/Test34] \u8bb0\u5f55\u5b58\u50a8\u8fd4\u56de\u70b9\u5931\u8d25: " + String.valueOf(throwable));
+            System.err.println("[Elytra Finder/Test34] 记录存储返回点失败: " + String.valueOf(throwable));
         }
     }
 
@@ -65,7 +65,7 @@ public final class StorageReturn {
                     STATES.remove(object);
                 }
                 StorageReturn.stopPath(object);
-                StorageReturn.chat(object, "info", "\u5b58\u50a8\u7ed3\u675f\uff0c\u5f53\u524d\u4f4d\u7f6e\u5df2\u5728\u6307\u5b9a\u8d77\u98de\u70b9\uff0c\u5f00\u59cb\u8d77\u98de.");
+                StorageReturn.chat(object, "info", "存储结束，当前位置已在指定起飞点，开始起飞.");
                 StorageReturn.invokeNoArg(object, "s");
                 return;
             }
@@ -75,10 +75,10 @@ public final class StorageReturn {
             StorageReturn.stopPath(object);
             StorageReturn.requestMove(object, returnState.target);
             returnState.lastPathTick = 0;
-            StorageReturn.chat(object, "info", "\u5b58\u50a8\u7ed3\u675f\uff0c\u5148\u8fd4\u56de\u6307\u5b9a\u8d77\u98de\u70b9\u518d\u8d77\u98de.");
+            StorageReturn.chat(object, "info", "存储结束，先返回指定起飞点再起飞.");
         }
         catch (Throwable throwable) {
-            System.err.println("[Elytra Finder/Test34] \u542f\u52a8\u8fd4\u56de\u8d77\u98de\u70b9\u5931\u8d25: " + String.valueOf(throwable));
+            System.err.println("[Elytra Finder/Test34] 启动返回起飞点失败: " + String.valueOf(throwable));
             try {
                 StorageReturn.invokeNoArg(object, "s");
             }
@@ -111,7 +111,7 @@ public final class StorageReturn {
                 synchronized (map) {
                     STATES.remove(object);
                 }
-                StorageReturn.chat(object, "info", "\u5df2\u56de\u5230\u6307\u5b9a\u8d77\u98de\u70b9\uff0c\u5f00\u59cb\u8d77\u98de.");
+                StorageReturn.chat(object, "info", "已回到指定起飞点，开始起飞.");
                 StorageReturn.invokeNoArg(object, "s");
                 return true;
             }
@@ -121,7 +121,7 @@ public final class StorageReturn {
                 synchronized (map) {
                     STATES.remove(object);
                 }
-                StorageReturn.invokePrivateString(object, "o", "\u5b58\u50a8\u540e 30 \u79d2\u5185\u65e0\u6cd5\u8fd4\u56de\u6307\u5b9a\u8d77\u98de\u70b9\uff0c\u5df2\u505c\u6b62\u4efb\u52a1.");
+                StorageReturn.invokePrivateString(object, "o", "存储后 30 秒内无法返回指定起飞点，已停止任务.");
                 return true;
             }
             if (returnState.ticks - returnState.lastPathTick >= 20 || !StorageReturn.isPathing(object)) {
@@ -131,7 +131,7 @@ public final class StorageReturn {
             return true;
         }
         catch (Throwable throwable) {
-            System.err.println("[Elytra Finder/Test34] \u8fd4\u56de\u8d77\u98de\u70b9\u68c0\u67e5\u5931\u8d25: " + String.valueOf(throwable));
+            System.err.println("[Elytra Finder/Test34] 返回起飞点检查失败: " + String.valueOf(throwable));
             throwable.printStackTrace();
             return true;
         }

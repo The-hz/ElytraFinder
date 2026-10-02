@@ -38,13 +38,13 @@ public final class ElytraStatusOverlay24 {
             return;
         }
         Module module = (Module)object;
-        SettingGroup settingGroup = module.settings.createGroup("\u72b6\u6001 HUD");
-        visible = settingGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u663e\u793a\u72b6\u6001 HUD")).description("\u5728\u6e38\u620f\u753b\u9762\u4e2d\u663e\u793a\u4e2d\u6587\u98de\u884c\u72b6\u6001\u3002")).defaultValue(true)).build());
-        horizontal = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD \u6a2a\u5411\u4f4d\u7f6e (%)")).description("0 \u4e3a\u5c4f\u5e55\u6700\u5de6\u4fa7\uff0c100 \u4e3a\u6700\u53f3\u4fa7\u3002100 \u4f1a\u6309\u771f\u5b9e\u7a97\u53e3\u5bbd\u5ea6\u8d34\u5230\u53f3\u8fb9\u3002")).defaultValue(100.0).range(0.0, 100.0).sliderRange(0.0, 100.0).decimalPlaces(1).build());
-        vertical = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD \u7eb5\u5411\u4f4d\u7f6e (%)")).description("0 \u4e3a\u5c4f\u5e55\u6700\u4e0a\u65b9\uff0c100 \u4e3a\u6700\u4e0b\u65b9\u3002")).defaultValue(0.0).range(0.0, 100.0).sliderRange(0.0, 100.0).decimalPlaces(1).build());
-        scale = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD \u5927\u5c0f")).description("HUD \u5b57\u4f53\u500d\u7387\u3002\u5b9e\u9645\u6309\u6700\u63a5\u8fd1\u7684\u6574\u6570\u500d\u7387\u6e32\u67d3\uff0c\u907f\u514d\u975e\u6574\u6570\u653e\u5927\u9020\u6210\u6587\u5b57\u53d1\u865a\u3002")).defaultValue(2.0).range(1.0, 8.0).sliderRange(1.0, 6.0).decimalPlaces(0).build());
-        margin = settingGroup.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("HUD \u8fb9\u8ddd")).description("HUD \u4e0e\u5c4f\u5e55\u8fb9\u7f18\u4fdd\u7559\u7684\u771f\u5b9e\u50cf\u7d20\u8ddd\u79bb\uff1b\u8bbe\u4e3a 0 \u53ef\u8d34\u7d27\u5c4f\u5e55\u53f3\u8fb9\u7f18\u3002")).defaultValue(4)).range(0, 100).sliderRange(0, 40).build());
-        columnGap = settingGroup.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("HUD \u5b57\u6bb5\u95f4\u8ddd")).description("\u72b6\u6001\u4e0e\u8ddd\u79bb\u3001\u5de1\u822a\u8303\u56f4\u4e0e\u9ad8\u5ea6\u4e4b\u95f4\u7684\u771f\u5b9e\u50cf\u7d20\u95f4\u8ddd\u3002")).defaultValue(2)).range(0, 30).sliderRange(0, 20).build());
+        SettingGroup settingGroup = module.settings.createGroup("状态 HUD");
+        visible = settingGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("显示状态 HUD")).description("在游戏画面中显示中文飞行状态。")).defaultValue(true)).build());
+        horizontal = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD 横向位置 (%)")).description("0 为屏幕最左侧，100 为最右侧。100 会按真实窗口宽度贴到右边。")).defaultValue(100.0).range(0.0, 100.0).sliderRange(0.0, 100.0).decimalPlaces(1).build());
+        vertical = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD 纵向位置 (%)")).description("0 为屏幕最上方，100 为最下方。")).defaultValue(0.0).range(0.0, 100.0).sliderRange(0.0, 100.0).decimalPlaces(1).build());
+        scale = settingGroup.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("HUD 大小")).description("HUD 字体倍率。实际按最接近的整数倍率渲染，避免非整数放大造成文字发虚。")).defaultValue(2.0).range(1.0, 8.0).sliderRange(1.0, 6.0).decimalPlaces(0).build());
+        margin = settingGroup.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("HUD 边距")).description("HUD 与屏幕边缘保留的真实像素距离；设为 0 可贴紧屏幕右边缘。")).defaultValue(4)).range(0, 100).sliderRange(0, 40).build());
+        columnGap = settingGroup.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("HUD 字段间距")).description("状态与距离、巡航范围与高度之间的真实像素间距。")).defaultValue(2)).range(0, 30).sliderRange(0, 20).build());
         if (!subscribed) {
             MeteorClient.EVENT_BUS.subscribe((Object)INSTANCE);
             subscribed = true;
@@ -65,7 +65,7 @@ public final class ElytraStatusOverlay24 {
             stringArray = ElytraFinderStatus22.lines(object);
         }
         catch (Throwable throwable) {
-            stringArray = new String[]{"\u72b6\u6001\uff1aHUD \u6570\u636e\u8bfb\u53d6\u5931\u8d25"};
+            stringArray = new String[]{"状态：HUD 数据读取失败"};
         }
         if (stringArray == null || stringArray.length == 0) {
             return;

@@ -81,19 +81,19 @@ public final class ElytraApproachSafety22 {
                 ElytraApproachSafety22.setIntField(object2, "ag", 0);
                 ElytraApproachSafety22.setEnumField(object2, "x", "LANDING");
                 ElytraApproachSafety22.clear(object2);
-                ElytraApproachSafety22.log(String.format("\u52a8\u6001\u8fdb\u8fd1: \u5df2\u786e\u8ba4\u9798\u7fc5\uff0c\u8ddd\u79bb %.1f \u683c\uff0c\u9ad8\u5ea6 %.1f\uff0c\u5207\u6362\u5230\u964d\u843d\u3002", d8, d3));
+                ElytraApproachSafety22.log(String.format("动态进近: 已确认鞘翅，距离 %.1f 格，高度 %.1f，切换到降落。", d8, d3));
                 return true;
             }
             if (!data.announced) {
                 data.announced = true;
                 if (d12 >= d11 + 8.0) {
                     data.mode = 0;
-                    ElytraApproachSafety22.log(String.format("\u52a8\u6001\u8fdb\u8fd1: \u8ddd\u79bb %.1f \u683c\uff0c\u9884\u6d4b\u5230\u8239\u4f4d\u7f6e Y\u2248%.1f\uff0c\u5b89\u5168\u9ad8\u5ea6 Y=%.1f\uff0c\u53ef\u76f4\u63a5\u4ece\u8239\u4e0a\u65b9\u8fdb\u8fd1\u3002", d8, d12, d11));
+                    ElytraApproachSafety22.log(String.format("动态进近: 距离 %.1f 格，预测到船位置 Y≈%.1f，安全高度 Y=%.1f，可直接从船上方进近。", d8, d12, d11));
                 } else {
                     data.mode = 1;
                     data.awayYaw = ElytraApproachSafety22.yawTo(object2, object6);
                     data.ticks = 0;
-                    ElytraApproachSafety22.log(String.format("\u52a8\u6001\u8fdb\u8fd1: \u8ddd\u79bb %.1f \u683c\uff0c\u9884\u6d4b\u5230\u8239\u4f4d\u7f6e Y\u2248%.1f < \u5b89\u5168\u9ad8\u5ea6 Y=%.1f\uff0c\u76f4\u63a5\u671d\u5411\u672b\u5730\u8239\u62c9\u5347\u3002", d8, d12, d11));
+                    ElytraApproachSafety22.log(String.format("动态进近: 距离 %.1f 格，预测到船位置 Y≈%.1f < 安全高度 Y=%.1f，直接朝向末地船拉升。", d8, d12, d11));
                 }
             }
             ++data.ticks;
@@ -112,7 +112,7 @@ public final class ElytraApproachSafety22 {
                     data.mode = 2;
                     data.ticks = 0;
                     ElytraApproachSafety22.setBooleanField(object2, "ay", false);
-                    ElytraApproachSafety22.log(String.format("\u52a8\u6001\u8fdb\u8fd1: \u76f4\u63a5\u62c9\u5347\u5230 Y=%.1f\uff08\u5f53\u524d\u9700\u8981\u7ea6 Y=%.1f\uff09\uff0c\u6062\u590d\u5b89\u5168\u8fdb\u8fd1\u3002", d3, d14));
+                    ElytraApproachSafety22.log(String.format("动态进近: 直接拉升到 Y=%.1f（当前需要约 Y=%.1f），恢复安全进近。", d3, d14));
                 }
                 return true;
             }
@@ -127,13 +127,13 @@ public final class ElytraApproachSafety22 {
                 data.awayYaw = f;
                 data.ticks = 0;
                 ElytraApproachSafety22.setBooleanField(object2, "ay", false);
-                ElytraApproachSafety22.log(String.format("\u52a8\u6001\u8fdb\u8fd1: \u8fd4\u56de\u8fc7\u7a0b\u4e2d\u9884\u6d4b\u9ad8\u5ea6\u4e0d\u8db3\uff08Y\u2248%.1f < %.1f\uff09\uff0c\u76f4\u63a5\u671d\u5411\u672b\u5730\u8239\u7ee7\u7eed\u62c9\u5347\u3002", d, d11 + 3.0));
+                ElytraApproachSafety22.log(String.format("动态进近: 返回过程中预测高度不足（Y≈%.1f < %.1f），直接朝向末地船继续拉升。", d, d11 + 3.0));
                 return true;
             }
             return d8 <= 200.0 || data.mode == 2;
         }
         catch (Throwable throwable) {
-            System.out.println("[Elytra Finder] \u52a8\u6001\u8fdb\u8fd1\u5f02\u5e38\uff0c\u5df2\u56de\u9000\u539f\u98de\u884c\u903b\u8f91: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
+            System.out.println("[Elytra Finder] 动态进近异常，已回退原飞行逻辑: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
             ElytraApproachSafety22.clear(object2);
             return false;
         }
@@ -145,9 +145,9 @@ public final class ElytraApproachSafety22 {
             return null;
         }
         return switch (data.mode) {
-            case 1 -> "\u671d\u8239\u76f4\u63a5\u62c9\u5347";
-            case 2 -> "\u5b89\u5168\u91cd\u65b0\u8fdb\u8fd1";
-            default -> "\u52a8\u6001\u5b89\u5168\u8fdb\u8fd1";
+            case 1 -> "朝船直接拉升";
+            case 2 -> "安全重新进近";
+            default -> "动态安全进近";
         };
     }
 

@@ -43,7 +43,7 @@ public final class StorageRecovery {
                 ++retryState.attempts;
             }
             if (retryState.attempts <= 3) {
-                StorageRecovery.chat(object, "warning", "\u6f5c\u5f71\u76d2\u754c\u9762\u5c1a\u672a\u540c\u6b65\uff0c\u7b49\u5f85\u540e\u91cd\u65b0\u6253\u5f00\uff08" + retryState.attempts + "/3\uff09...");
+                StorageRecovery.chat(object, "warning", "潜影盒界面尚未同步，等待后重新打开（" + retryState.attempts + "/3）...");
                 object2 = StorageRecovery.storagePhase(object, "OPEN_BOX");
                 Object object3 = StorageRecovery.storagePhase(object, "CLOSE_SCREEN");
                 StorageRecovery.set(object, "bq", object2);
@@ -58,10 +58,10 @@ public final class StorageRecovery {
             synchronized (object2) {
                 STATES.remove(object);
             }
-            StorageRecovery.invokePrivate(object, "o", new Class[]{String.class}, new Object[]{"\u6f5c\u5f71\u76d2\u754c\u9762\u8fde\u7eed\u5f02\u5e38\uff0c\u5df2\u81ea\u52a8\u91cd\u8bd5 3 \u6b21\uff0c\u505c\u6b62\u4efb\u52a1."});
+            StorageRecovery.invokePrivate(object, "o", new Class[]{String.class}, new Object[]{"潜影盒界面连续异常，已自动重试 3 次，停止任务."});
         }
         catch (Throwable throwable) {
-            System.err.println("[Elytra Finder/Test33] \u6f5c\u5f71\u76d2\u754c\u9762\u6062\u590d\u5931\u8d25: " + String.valueOf(throwable));
+            System.err.println("[Elytra Finder/Test33] 潜影盒界面恢复失败: " + String.valueOf(throwable));
             throwable.printStackTrace();
         }
     }

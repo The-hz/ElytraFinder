@@ -38,11 +38,11 @@ extends Module {
     private boolean pullSettingsChanged;
 
     public RocketSafetyLogout() {
-        super(AddonTemplate.CATEGORY, "\u70df\u82b1\u5b89\u5168\u64a4\u79bb", "\u627e\u9798\u7fc5\u65f6\u76d1\u63a7\u80cc\u5305+\u5feb\u6377\u680f\u70df\u82b1\u3002\u4f4e\u4e8e\u9608\u503c\u540e\u722c\u5347\u5230\u8bbe\u5b9a\u9ad8\u5ea6\uff0c\u786e\u8ba4\u6ed1\u7fd4\u5e76\u81ea\u52a8\u79bb\u7ebf\u3002");
+        super(AddonTemplate.CATEGORY, "烟花安全撤离", "找鞘翅时监控背包+快捷栏烟花。低于阈值后爬升到设定高度，确认滑翔并自动离线。");
         this.sg = this.settings.getDefaultGroup();
-        this.threshold = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u70df\u82b1\u64a4\u79bb\u9608\u503c")).description("\u4e3b\u80cc\u5305\u548c\u5feb\u6377\u680f\u70df\u82b1\u603b\u6570\u4f4e\u4e8e\u8be5\u503c\u65f6\uff0c\u505c\u6b62\u627e\u8239\u5e76\u6267\u884c\u5b89\u5168\u64a4\u79bb\u3002")).defaultValue(32)).range(10, 64).sliderRange(10, 64).build());
-        this.targetY = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u64a4\u79bb\u9ad8\u5ea6-Y")).description("\u70df\u82b1\u4e0d\u8db3\u540e\u4f7f\u7528\u5269\u4f59\u70df\u82b1\u722c\u5347\u5230\u8be5Y\u9ad8\u5ea6\u3002")).defaultValue(300)).range(100, 500).sliderRange(100, 500).build());
-        this.glideTicks = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u6ed1\u7fd4\u786e\u8ba4\u65f6\u95f4")).description("\u5230\u8fbe\u76ee\u6807\u9ad8\u5ea6\u540e\uff0c\u8fde\u7eed\u786e\u8ba4\u5904\u4e8e\u9798\u7fc5\u6ed1\u7fd4\u591a\u5c11tick\u518d\u81ea\u52a8\u79bb\u7ebf\u300220tick\u7ea61\u79d2\u3002")).defaultValue(20)).range(5, 100).sliderRange(5, 60).build());
+        this.threshold = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("烟花撤离阈值")).description("主背包和快捷栏烟花总数低于该值时，停止找船并执行安全撤离。")).defaultValue(32)).range(10, 64).sliderRange(10, 64).build());
+        this.targetY = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("撤离高度-Y")).description("烟花不足后使用剩余烟花爬升到该Y高度。")).defaultValue(300)).range(100, 500).sliderRange(100, 500).build());
+        this.glideTicks = this.sg.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("滑翔确认时间")).description("到达目标高度后，连续确认处于鞘翅滑翔多少tick再自动离线。20tick约1秒。")).defaultValue(20)).range(5, 100).sliderRange(5, 60).build());
         this.phase = Phase.ARMED;
     }
 
@@ -86,7 +86,7 @@ extends Module {
             if (n >= (Integer)this.threshold.get()) {
                 return;
             }
-            this.info("\u70df\u82b1\u4ec5\u5269 %d\uff0c\u4f4e\u4e8e\u9608\u503c %d\uff0c\u5f00\u59cb\u5b89\u5168\u64a4\u79bb\u3002", new Object[]{n, this.threshold.get()});
+            this.info("烟花仅剩 %d，低于阈值 %d，开始安全撤离。", new Object[]{n, this.threshold.get()});
             elytraCollectorModule.toggle();
             try {
                 PathManagers.get().stop();
@@ -96,9 +96,9 @@ extends Module {
             }
             double d = this.mc.player.getY();
             if (d >= (double)((Integer)this.targetY.get()).intValue()) {
-                this.beginGlide("\u5df2\u5904\u4e8e\u64a4\u79bb\u9ad8\u5ea6");
+                this.beginGlide("已处于撤离高度");
             } else if (n <= 0) {
-                this.beginGlide("\u70df\u82b1\u5df2\u8017\u5c3d");
+                this.beginGlide("烟花已耗尽");
             } else {
                 this.startPullUp(d);
             }
@@ -108,15 +108,15 @@ extends Module {
         if (this.phase == Phase.CLIMBING) {
             double d = this.mc.player.getY();
             if (d >= (double)((Integer)this.targetY.get()).intValue()) {
-                this.beginGlide("\u5df2\u5230\u8fbe Y=" + String.valueOf(this.targetY.get()));
+                this.beginGlide("已到达 Y=" + String.valueOf(this.targetY.get()));
                 return;
             }
             if (n <= 0) {
-                this.beginGlide("\u70df\u82b1\u5728\u722c\u5347\u9014\u4e2d\u8017\u5c3d");
+                this.beginGlide("烟花在爬升途中耗尽");
                 return;
             }
             if (this.phaseTicks > 900) {
-                this.beginGlide("\u722c\u5347\u8d85\u65f6");
+                this.beginGlide("爬升超时");
             }
             return;
         }
@@ -141,7 +141,7 @@ extends Module {
                 return;
             }
             if (this.glideAttemptTicks > 200) {
-                this.warning("\u6ed1\u7fd4\u786e\u8ba4\u8d85\u65f6\uff0c\u6267\u884c\u79bb\u7ebf\u515c\u5e95\u3002\u5f53\u524dY=%.1f", new Object[]{this.mc.player.getY()});
+                this.warning("滑翔确认超时，执行离线兜底。当前Y=%.1f", new Object[]{this.mc.player.getY()});
                 this.disconnectNow();
             }
         }
@@ -154,7 +154,7 @@ extends Module {
     private void startPullUp(double d) {
         PullUp pullUp = (PullUp)Modules.get().get(PullUp.class);
         if (pullUp == null) {
-            this.beginGlide("\u672a\u627e\u5230PullUp\u6a21\u5757");
+            this.beginGlide("未找到PullUp模块");
             return;
         }
         try {
@@ -176,11 +176,11 @@ extends Module {
             }
             this.phase = Phase.CLIMBING;
             this.phaseTicks = 0;
-            this.info("\u5df2\u505c\u6b62\u627e\u8239\uff0c\u4f7f\u7528\u5269\u4f59\u70df\u82b1\u722c\u5347\uff1a\u5f53\u524dY %.1f -> \u76ee\u6807Y %d\u3002", new Object[]{d, this.targetY.get()});
+            this.info("已停止找船，使用剩余烟花爬升：当前Y %.1f -> 目标Y %d。", new Object[]{d, this.targetY.get()});
         }
         catch (Throwable throwable) {
-            this.warning("\u65e0\u6cd5\u542f\u52a8\u64a4\u79bb\u722c\u5347\uff0c\u8f6c\u5165\u6ed1\u7fd4\u79bb\u7ebf\u4fdd\u62a4\uff1a%s", new Object[]{throwable.getClass().getSimpleName()});
-            this.beginGlide("PullUp\u914d\u7f6e\u5931\u8d25");
+            this.warning("无法启动撤离爬升，转入滑翔离线保护：%s", new Object[]{throwable.getClass().getSimpleName()});
+            this.beginGlide("PullUp配置失败");
         }
     }
 
@@ -197,7 +197,7 @@ extends Module {
         this.phaseTicks = 0;
         this.glideStableTicks = 0;
         this.glideAttemptTicks = 0;
-        this.info("%s\uff0c\u505c\u6b62\u4f7f\u7528\u70df\u82b1\u5e76\u8fdb\u5165\u6ed1\u7fd4\uff1b\u8fde\u7eed\u786e\u8ba4 %d tick \u540e\u81ea\u52a8\u79bb\u7ebf\u3002", new Object[]{string, this.glideTicks.get()});
+        this.info("%s，停止使用烟花并进入滑翔；连续确认 %d tick 后自动离线。", new Object[]{string, this.glideTicks.get()});
     }
 
     private void stopPullUpAndRestore() {
@@ -235,8 +235,8 @@ extends Module {
             return;
         }
         this.phase = Phase.DONE;
-        this.info("\u5b89\u5168\u64a4\u79bb\u5b8c\u6210\uff0c\u6b63\u5728\u81ea\u52a8\u79bb\u7ebf\u3002\u70df\u82b1\u5269\u4f59\uff1a%d", new Object[]{this.rocketCount()});
-        this.mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket((Text)Text.literal((String)"Elytra Finder\uff1a\u70df\u82b1\u4e0d\u8db3\uff0c\u5df2\u5b8c\u6210\u5b89\u5168\u64a4\u79bb\u3002")));
+        this.info("安全撤离完成，正在自动离线。烟花剩余：%d", new Object[]{this.rocketCount()});
+        this.mc.player.networkHandler.onDisconnect(new DisconnectS2CPacket((Text)Text.literal((String)"Elytra Finder：烟花不足，已完成安全撤离。")));
     }
 
     private static enum Phase {

@@ -34,26 +34,18 @@ extends Module {
     private boolean b = false;
     private boolean c = false;
     private final SettingGroup d = this.settings.getDefaultGroup();
-    private final Setting<Boolean> e = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u542f\u7528 Baritone \u547d\u4ee4\u4fdd\u62a4")).description((String)"Baritone \u547d\u4ee4 `#` \u524d\u7f00\u4fdd\u62a4\uff1a\u68c0\u6d4b\u5230\u6d88\u606f\u4ee5 # \u5f00\u5934\u4f46 Baritone \u4e0d\u53ef\u7528\u65f6\u62e6\u622a\u53d1\u9001\u3002")).defaultValue(false)).build());
-    private final Setting<Boolean> f = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u542f\u7528\u81ea\u52a8\u8df3\u8dc3\u4fee\u590d")).description((String)"Baritone \u9798\u7fc5\u5bfb\u8def\u505c\u6ede\u4e14\u73a9\u5bb6\u672a\u6ed1\u7fd4\u65f6\u81ea\u52a8\u8d77\u8df3 (jump + START_FALL_FLYING \u5305)\u3002")).defaultValue(false)).build());
-    private final Setting<Boolean> g = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u542f\u7528\u7d27\u6025\u964d\u843d\u4fee\u590d")).description((String)"Baritone mine/\u5bfb\u8def\u7ed3\u675f\u540e\u672a\u6ed1\u7fd4\u4e14\u4f4e\u4e8e\u6307\u5b9a\u9ad8\u5ea6\u65f6\u81ea\u52a8\u91cd\u65b0\u8d77\u8df3\u6ed1\u7fd4 (\u9632\u5361\u4f4f)\u3002")).defaultValue(false)).build());
-    private final Setting<Double> h = this.d.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u7d27\u6025\u964d\u843d\u9ad8\u5ea6")).description((String)"\u4f4e\u4e8e\u8be5 Y \u4e14\u672a\u6ed1\u7fd4\u65f6\u89c6\u4e3a\u7d27\u6025\u964d\u843d\u3002")).defaultValue(-20.0).min(-320.0).max(320.0).sliderMin(-100.0).sliderMax(100.0).build());
-    private final Setting<Boolean> i = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("Baritone \u6761\u4ef6\u6682\u505c")).description((String)"Baritone \u6761\u4ef6\u6682\u505c\uff1a\u73a9\u5bb6\u6b63\u5728\u624b\u52a8\u63a7\u5236 (WASD/\u8df3\u8dc3\u6709\u8f93\u5165) \u6216\u6309\u6682\u505c\u70ed\u952e\u65f6\uff0c\u6bcf tick \u53d6\u6d88\u5bfb\u8def\u3002")).defaultValue(false)).build());
-    private final Setting<Keybind> j = this.d.add((Setting)((KeybindSetting.Builder)((KeybindSetting.Builder)new KeybindSetting.Builder().name("Baritone \u6682\u505c\u70ed\u952e")).description((String)"\u6761\u4ef6\u6682\u505c\u70ed\u952e\uff1a\u6309\u4e0b\u540e\u624b\u52a8\u63a5\u7ba1 (\u5207\u6362\u63a5\u7ba1\u72b6\u6001)\uff0c\u914d\u5408\u6761\u4ef6\u6682\u505c\u53d6\u6d88 Baritone \u5bfb\u8def\u3002")).action(() -> {
+    private final Setting<Boolean> e = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("启用 Baritone 命令保护")).description((String)"Baritone 命令 `#` 前缀保护：检测到消息以 # 开头但 Baritone 不可用时拦截发送。")).defaultValue(false)).build());
+    private final Setting<Boolean> f = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("启用自动跳跃修复")).description((String)"Baritone 鞘翅寻路停滞且玩家未滑翔时自动起跳 (jump + START_FALL_FLYING 包)。")).defaultValue(false)).build());
+    private final Setting<Boolean> g = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("启用紧急降落修复")).description((String)"Baritone mine/寻路结束后未滑翔且低于指定高度时自动重新起跳滑翔 (防卡住)。")).defaultValue(false)).build());
+    private final Setting<Double> h = this.d.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("紧急降落高度")).description((String)"低于该 Y 且未滑翔时视为紧急降落。")).defaultValue(-20.0).min(-320.0).max(320.0).sliderMin(-100.0).sliderMax(100.0).build());
+    private final Setting<Boolean> i = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("Baritone 条件暂停")).description((String)"Baritone 条件暂停：玩家正在手动控制 (WASD/跳跃有输入) 或按暂停热键时，每 tick 取消寻路。")).defaultValue(false)).build());
+    private final Setting<Keybind> j = this.d.add((Setting)((KeybindSetting.Builder)((KeybindSetting.Builder)new KeybindSetting.Builder().name("Baritone 暂停热键")).description((String)"条件暂停热键：按下后手动接管 (切换接管状态)，配合条件暂停取消 Baritone 寻路。")).action(() -> {
         this.b = !this.b;
     }).build());
-    private final Setting<Boolean> k = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u542f\u7528\u7ef4\u5ea6\u4fee\u590d")).description((String)"\u7ef4\u5ea6\u4fee\u590d\u63d0\u793a\uff1a\u771f\u5b9e\u7ef4\u5ea6\u66ff\u6362\u9700\u4f9d\u8d56 Baritone \u5185\u90e8\u63a7\u5236\uff0c\u79fb\u690d\u7248\u4ec5\u8bb0\u5f55\u63d0\u793a\uff0c\u4e0d\u53ef\u7528\u3002")).defaultValue(false)).build());
-    static Object m;
-    static Object l;
-    static Object n;
-    static Object o;
-    static Object p;
-    static Object q;
-    static Object r;
-    static Object s;
+    private final Setting<Boolean> k = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("启用维度修复")).description((String)"维度修复提示：真实维度替换需依赖 Baritone 内部控制，移植版仅记录提示，不可用。")).defaultValue(false)).build());
 
     public BaritoneFix() {
-        super(AddonTemplate.CATEGORY, "Baritone \u4fee\u590d", (String)"Baritone \u9632\u5361\u4f4f\u4fee\u590d\uff1aBaritone \u5bfb\u8def/\u9798\u7fc5\u98de\u884c\u5f02\u5e38\u65f6\u81ea\u52a8\u63a5\u7ba1\u5904\u7406\u3002");
+        super(AddonTemplate.CATEGORY, "Baritone 修复", (String)"Baritone 防卡住修复：Baritone 寻路/鞘翅飞行异常时自动接管处理。");
         a = this;
     }
 
@@ -85,7 +77,7 @@ extends Module {
         }
         if (((Boolean)this.k.get()).booleanValue() && !this.c) {
             this.c = true;
-            this.info((String)"Baritone Fix: dimension-fix \u9700\u4f9d\u8d56 Baritone \u5185\u90e8\u63a7\u5236\uff0c\u53cd\u5c04\u79fb\u690d\u7248\u4e0d\u53ef\u7528\uff0c\u5df2\u5ffd\u7565\u8be5\u529f\u80fd\u3002", new Object[0]);
+            this.info((String)"Baritone Fix: dimension-fix 需依赖 Baritone 内部控制，反射移植版不可用，已忽略该功能。", new Object[0]);
         }
     }
 
@@ -97,7 +89,7 @@ extends Module {
         String msg = event.message;
         if (msg != null && msg.startsWith((String)"#") && !BaritonePathManager.isAvailable()) {
             event.setCancelled(true);
-            this.info((String)"Baritone Fix: \u68c0\u6d4b\u5230 Baritone \u547d\u4ee4 (#...) \u4f46 Baritone \u4e0d\u53ef\u7528\uff0c\u5df2\u53d6\u6d88\u8be5\u6d88\u606f\u53d1\u9001\u3002", new Object[0]);
+            this.info((String)"Baritone Fix: 检测到 Baritone 命令 (#...) 但 Baritone 不可用，已取消该消息发送。", new Object[0]);
         }
     }
 

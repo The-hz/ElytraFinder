@@ -65,7 +65,7 @@ public final class ElytraSafeEscape {
                 if (n == 0) {
                     f = ElytraSafeEscape.normalizeYaw(ElytraSafeEscape.yawTo(object, object3) + 180.0f);
                     ElytraSafeEscape.setFloatField(object, "bc", f);
-                    ElytraSafeEscape.log("\u5b89\u5168\u590d\u98de: \u8fdb\u5165\u8239\u5e95\u9003\u9038\uff0c\u5148\u6c34\u5e73\u80cc\u79bb\u672b\u5730\u8239\uff0c\u8fbe\u5230\u7ea6 90 \u683c\u5b89\u5168\u8ddd\u79bb\u540e\u518d\u62ac\u5934\u3002");
+                    ElytraSafeEscape.log("安全复飞: 进入船底逃逸，先水平背离末地船，达到约 90 格安全距离后再抬头。");
                 }
             }
             ElytraSafeEscape.setIntField(object, "bd", ++n2);
@@ -83,7 +83,7 @@ public final class ElytraSafeEscape {
                         ElytraSafeEscape.setIntField(object, "cr", 1);
                         ElytraSafeEscape.setIntField(object, "bd", 0);
                         ElytraSafeEscape.setBooleanField(object, "ay", false);
-                        ElytraSafeEscape.log(String.format("\u5b89\u5168\u590d\u98de: \u5df2\u79bb\u5f00\u8239\u4f53\u6c34\u5e73\u8303\u56f4\uff08%.1f \u683c\uff09\uff0c\u5f00\u59cb\u5728\u8239\u5916\u722c\u5347\u5230 Y=%d\u3002", d9, (int)d5 + 30));
+                        ElytraSafeEscape.log(String.format("安全复飞: 已离开船体水平范围（%.1f 格），开始在船外爬升到 Y=%d。", d9, (int)d5 + 30));
                     }
                     return true;
                 }
@@ -101,7 +101,7 @@ public final class ElytraSafeEscape {
                         ElytraSafeEscape.setIntField(object, "cr", 2);
                         ElytraSafeEscape.setIntField(object, "bd", 0);
                         ElytraSafeEscape.setBooleanField(object, "ay", false);
-                        ElytraSafeEscape.log("\u5b89\u5168\u590d\u98de: \u5df2\u5230\u8fbe\u8239\u4f53\u4e0a\u65b9\u5b89\u5168\u9ad8\u5ea6\uff0c\u5f00\u59cb\u4ece\u8239\u5916\u91cd\u65b0\u8fdb\u8fd1\u3002");
+                        ElytraSafeEscape.log("安全复飞: 已到达船体上方安全高度，开始从船外重新进近。");
                     }
                     return true;
                 }
@@ -118,7 +118,7 @@ public final class ElytraSafeEscape {
                         ElytraSafeEscape.setIntField(object, "cr", 0);
                         ElytraSafeEscape.setIntField(object, "bd", 0);
                         ElytraSafeEscape.setBooleanField(object, "ay", false);
-                        ElytraSafeEscape.log("\u5b89\u5168\u590d\u98de: \u91cd\u65b0\u8fdb\u8fd1\u9ad8\u5ea6\u4e0d\u8db3\uff0c\u53d6\u6d88\u672c\u6b21\u8fdb\u8fd1\u5e76\u518d\u6b21\u5411\u8239\u5916\u64a4\u79bb\u3002");
+                        ElytraSafeEscape.log("安全复飞: 重新进近高度不足，取消本次进近并再次向船外撤离。");
                         return true;
                     }
                     if (d9 <= 28.0 && d2 >= d5 + 10.0) {
@@ -129,7 +129,7 @@ public final class ElytraSafeEscape {
                         ElytraSafeEscape.setBooleanField(object, "ay", false);
                         ElytraSafeEscape.setIntField(object, "ag", 0);
                         ElytraSafeEscape.setEnumField(object, "x", "LANDING");
-                        ElytraSafeEscape.log("\u5b89\u5168\u590d\u98de: \u5df2\u4ece\u5b89\u5168\u9ad8\u5ea6\u8fd4\u56de\u8239\u5916\uff0c\u91cd\u65b0\u8fdb\u5165\u964d\u843d\u6d41\u7a0b\u3002");
+                        ElytraSafeEscape.log("安全复飞: 已从安全高度返回船外，重新进入降落流程。");
                     }
                     return true;
                 }
@@ -145,7 +145,7 @@ public final class ElytraSafeEscape {
             catch (Throwable throwable2) {
                 // empty catch block
             }
-            System.out.println("[Ying] \u5b89\u5168\u590d\u98de\u5f02\u5e38\uff0c\u5df2\u56de\u9000\u539f\u903b\u8f91: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
+            System.out.println("[Ying] 安全复飞异常，已回退原逻辑: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
             return false;
         }
     }

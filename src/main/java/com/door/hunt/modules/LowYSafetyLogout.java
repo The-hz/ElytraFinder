@@ -68,7 +68,7 @@ public final class LowYSafetyLogout {
             }
             Class<?> clazz = Class.forName("net.minecraft.class_2561");
             Method method = clazz.getMethod("literal", String.class);
-            Object object6 = method.invoke(null, "Elytra Finder\uff1a\u9ad8\u5ea6\u4f4e\u4e8e\u5b89\u5168\u9608\u503c\uff0c\u5df2\u81ea\u52a8\u79bb\u7ebf\u3002");
+            Object object6 = method.invoke(null, "Elytra Finder：高度低于安全阈值，已自动离线。");
             Class<?> clazz2 = Class.forName("net.minecraft.class_2661");
             Constructor<?> constructor = clazz2.getConstructor(clazz);
             Object obj = constructor.newInstance(object6);
@@ -86,7 +86,7 @@ public final class LowYSafetyLogout {
             try {
                 if (object instanceof Module) {
                     Module moduleErr = (Module)object;
-                    moduleErr.error("\u4f4e\u9ad8\u5ea6\u81ea\u52a8\u79bb\u7ebf\u5931\u8d25: %s", new Object[]{throwable.getClass().getSimpleName()});
+                    moduleErr.error("低高度自动离线失败: %s", new Object[]{throwable.getClass().getSimpleName()});
                 }
             }
             catch (Throwable throwable2) {

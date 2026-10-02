@@ -224,14 +224,6 @@ extends Module {
     private boolean cv;
     private boolean cw;
     private final Object cx;
-    static Object cz;
-    static Object da;
-    static Object db;
-    static Object dc;
-    static Object dd;
-    static Object de;
-    static Object cy;
-    static Object df;
     private final Setting startClimbAngle;
     private final Setting cruiseClimbAngle;
     private final Setting cruiseGlideAngle;
@@ -250,31 +242,31 @@ extends Module {
     }
 
     public ElytraCollectorModule() {
-        super(AddonTemplate.CATEGORY, "\u9798\u7fc5\u6536\u96c6\u5668", (String)"\u5168\u81ea\u52a8\u627e\u672b\u5730\u57ce\u9798\u7fc5\uff1a\u79cd\u5b50\u5b9a\u4f4d + \u9f99\u5934\u7cbe\u786e\u5b9a\u4f4d + \u9ad8\u5ea6\u4fdd\u6301\u98de\u884c + \u7f13\u964d + Baritone \u5bfb\u8def + \u6253\u5c55\u793a\u6846\u6361\u9798\u7fc5.");
+        super(AddonTemplate.CATEGORY, "鞘翅收集器", (String)"全自动找末地城鞘翅：种子定位 + 龙头精确定位 + 高度保持飞行 + 缓降 + Baritone 寻路 + 打展示框捡鞘翅.");
         this.d = this.settings.getDefaultGroup();
         this.e = this.settings.createGroup((String)"Flight");
-        this.f = this.d.add((Setting)((StringSetting.Builder)((StringSetting.Builder)((StringSetting.Builder)new StringSetting.Builder().name("\u79cd\u5b50")).description((String)"\u4e16\u754c\u79cd\u5b50 (0 = \u5f53\u524d\u4e16\u754c).")).defaultValue("-7346913998703726680")).build());
-        this.g = this.d.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u641c\u7d22\u8303\u56f4")).description((String)"\u641c\u7d22\u534a\u5f84\uff0c\u5355\u4f4d\u65b9\u5757 (\u4ece\u73a9\u5bb6\u4f4d\u7f6e).")).defaultValue(5000)).range(320, 100000).sliderRange(320, 20000).build());
-        this.h = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u6700\u4f4e\u9ad8\u5ea6")).description((String)"\u98de\u884c\u4e2d\u4f4e\u4e8e\u6b64\u9ad8\u5ea6\u65f6\u89e6\u53d1\u722c\u5347.")).defaultValue(180)).range(100, 300).sliderRange(120, 260).build());
-        this.i = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u6700\u9ad8\u9ad8\u5ea6")).description((String)"\u98de\u884c\u4e2d\u9ad8\u4e8e\u6b64\u9ad8\u5ea6\u65f6\u505c\u6b62\u722c\u5347\u3001\u8f6c\u4e3a\u5e73\u7f13\u4e0b\u6ed1 (\u4e0e min-height \u7ec4\u6210\u6ede\u56de\u533a\u95f4).")).defaultValue(220)).range(120, 320).sliderRange(140, 300).build());
-        this.j = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u62c9\u5347\u9ad8\u5ea6")).description((String)"\u8d77\u98de\u540e\u62ac\u5934\u722c\u5347\u5230\u7684\u76ee\u6807\u9ad8\u5ea6 (\u9700\u9ad8\u4e8e max-height).")).defaultValue(230)).range(200, 320).sliderRange(200, 300).build());
-        this.k = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u4fef\u4ef0\u901f\u5ea6")).description((String)"\u98de\u884c (pitch40) \u65f6\u4e0a\u4e0b\u8f6c\u52a8\u89c6\u89d2 (pitch) \u7684\u901f\u5ea6 (\u5ea6/tick).")).defaultValue(10.0).min(1.0).sliderMax(45.0).build());
-        this.l = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u504f\u822a\u901f\u5ea6")).description((String)"\u5de6\u53f3\u8f6c\u52a8\u89c6\u89d2 (yaw) \u53ca\u9798\u7fc5\u7f13\u964d\u7684\u8f6c\u5411\u901f\u5ea6 (\u5ea6/tick).")).defaultValue(30.0).min(1.0).sliderMax(90.0).build());
-        this.m = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("Kill Aura \u653b\u51fb\u8ddd\u79bb")).description((String)"\u653b\u51fb\u5c55\u793a\u6846 (item_frame) \u7684\u5224\u5b9a\u8ddd\u79bb.")).defaultValue(3.0).min(1.0).sliderMax(6.0).build());
-        this.n = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u70df\u82b1\u95f4\u9694")).description((String)"\u5c55\u5f00\u9798\u7fc5\u540e\u7acb\u5373\u4f7f\u7528\u7b2c\u4e00\u4e2a\u70df\u82b1\uff0c\u4e4b\u540e\u6bcf\u9694\u8fd9\u4e48\u591a\u79d2\u518d\u7528\u4e00\u4e2a (\u79d2).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
-        this.o = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("\u5df2\u8bbf\u95ee\u672b\u5730\u8239")).description((String)"\u9ed1\u540d\u5355\uff1a\u5df2\u7ecf\u53bb\u8fc7\u7684\u8239 (x,z)\uff0c\u641c\u7d22\u65f6\u4f1a\u81ea\u52a8\u8df3\u8fc7. \u81ea\u52a8\u7ef4\u62a4.")).defaultValue(new ArrayList())).visible(() -> false)).build());
-        this.p = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("\u641c\u7d22\u7ed3\u679c")).description((String)"\u4e0a\u6b21\u641c\u7d22\u7ed3\u679c\u5217\u8868 (x,y,z,\u671d\u5411)\uff0c\u4e0b\u4e00\u6b21\u641c\u7d22\u5b8c\u6210\u540e\u8986\u76d6.")).defaultValue(new ArrayList())).build());
-        this.q = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u5f00\u59cb")).description((String)"\u5f00\u59cb\u81ea\u52a8\u91c7\u96c6.")).defaultValue(false)).onChanged(b -> {
+        this.f = this.d.add((Setting)((StringSetting.Builder)((StringSetting.Builder)((StringSetting.Builder)new StringSetting.Builder().name("种子")).description((String)"世界种子 (0 = 当前世界).")).defaultValue("-7346913998703726680")).build());
+        this.g = this.d.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("搜索范围")).description((String)"搜索半径，单位方块 (从玩家位置).")).defaultValue(5000)).range(320, 100000).sliderRange(320, 20000).build());
+        this.h = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最低高度")).description((String)"飞行中低于此高度时触发爬升.")).defaultValue(180)).range(100, 300).sliderRange(120, 260).build());
+        this.i = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最高高度")).description((String)"飞行中高于此高度时停止爬升、转为平缓下滑 (与 min-height 组成滞回区间).")).defaultValue(220)).range(120, 320).sliderRange(140, 300).build());
+        this.j = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("拉升高度")).description((String)"起飞后抬头爬升到的目标高度 (需高于 max-height).")).defaultValue(230)).range(200, 320).sliderRange(200, 300).build());
+        this.k = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("俯仰速度")).description((String)"飞行 (pitch40) 时上下转动视角 (pitch) 的速度 (度/tick).")).defaultValue(10.0).min(1.0).sliderMax(45.0).build());
+        this.l = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("偏航速度")).description((String)"左右转动视角 (yaw) 及鞘翅缓降的转向速度 (度/tick).")).defaultValue(30.0).min(1.0).sliderMax(90.0).build());
+        this.m = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("Kill Aura 攻击距离")).description((String)"攻击展示框 (item_frame) 的判定距离.")).defaultValue(3.0).min(1.0).sliderMax(6.0).build());
+        this.n = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"展开鞘翅后立即使用第一个烟花，之后每隔这么多秒再用一个 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
+        this.o = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("已访问末地船")).description((String)"黑名单：已经去过的船 (x,z)，搜索时会自动跳过. 自动维护.")).defaultValue(new ArrayList())).visible(() -> false)).build());
+        this.p = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("搜索结果")).description((String)"上次搜索结果列表 (x,y,z,朝向)，下一次搜索完成后覆盖.")).defaultValue(new ArrayList())).build());
+        this.q = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("开始")).description((String)"开始自动采集.")).defaultValue(false)).onChanged(b -> {
             if (b.booleanValue()) {
                 this.c();
             }
         })).build());
-        this.r = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u8c03\u8bd5")).description((String)"\u8f93\u51fa\u8c03\u8bd5\u65e5\u5fd7 (\u7528\u4e8e\u6821\u51c6\u9ad8\u5ea6\u516c\u5f0f).")).defaultValue(false)).build());
+        this.r = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("调试")).description((String)"输出调试日志 (用于校准高度公式).")).defaultValue(false)).build());
         this.s = this.settings.createGroup((String)"Storage");
-        this.t = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u6e05\u4ed3\u4fdd\u7559\u7a7a\u69fd")).description((String)"\u80cc\u5305\u53ef\u7528\u7a7a\u683c \u2264 \u6b64\u503c\u65f6\uff0c\u62ff\u5230\u9798\u7fc5\u540e\u81ea\u52a8\u53bb\u672b\u5f71\u7bb1\u5b58\u9798\u7fc5.")).defaultValue(3)).range(0, 36).sliderRange(0, 36).build());
-        this.u = this.s.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("\u8865\u7ed9\u54c1")).description((String)"\u7269\u8d44\u5217\u8868\uff0c\u683c\u5f0f: \u7269\u54c1ID;\u6700\u4f4e\u503c;\u76ee\u6807\u5e93\u5b58 (\u5982 minecraft:firework_rocket;32;256). \u80cc\u5305\u7269\u8d44\u4f4e\u4e8e\u6700\u4f4e\u503c\u65f6\u81ea\u52a8\u4ece\u672b\u5f71\u7bb1\u8865\u8d27\uff0c\u62ff\u5230\u76ee\u6807\u5e93\u5b58\u4e3a\u6b62.")).defaultValue(new ArrayList<String>(List.of((String)"minecraft:firework_rocket;4;16", (String)"minecraft:cooked_beef;8;32")))).build());
-        this.v = this.s.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u4f4e Y \u9000\u51fa")).description((String)"Y \u4f4e\u4e8e\u9608\u503c\u65f6\u81ea\u52a8\u9000\u51fa\u6e38\u620f (\u9632\u865a\u7a7a\u6389\u7269).")).defaultValue(true)).build());
-        this.w = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("\u4f4e Y \u9608\u503c")).description((String)"\u4f4e\u4e8e\u6b64 Y \u81ea\u52a8\u9000\u51fa\u6e38\u620f.")).defaultValue(30)).range(0, 100).sliderRange(0, 100).build());
+        this.t = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("清仓保留空槽")).description((String)"背包可用空格 ≤ 此值时，拿到鞘翅后自动去末影箱存鞘翅.")).defaultValue(3)).range(0, 36).sliderRange(0, 36).build());
+        this.u = this.s.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("补给品")).description((String)"物资列表，格式: 物品ID;最低值;目标库存 (如 minecraft:firework_rocket;32;256). 背包物资低于最低值时自动从末影箱补货，拿到目标库存为止.")).defaultValue(new ArrayList<String>(List.of((String)"minecraft:firework_rocket;4;16", (String)"minecraft:cooked_beef;8;32")))).build());
+        this.v = this.s.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("低 Y 退出")).description((String)"Y 低于阈值时自动退出游戏 (防虚空掉物).")).defaultValue(true)).build());
+        this.w = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("低 Y 阈值")).description((String)"低于此 Y 自动退出游戏.")).defaultValue(30)).range(0, 100).sliderRange(0, 100).build());
         this.x = State.IDLE;
         this.y = CollectStep.TO_P1;
         this.z = Collections.synchronizedList(new ArrayList());
@@ -349,30 +341,30 @@ extends Module {
         this.cv = false;
         this.cw = false;
         this.cx = new Object();
-        this.startClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u8d77\u98de\u62c9\u5347\u89d2\u5ea6")).description("\u9996\u6b21\u8d77\u98de\u4ee5\u53ca\u6ed1\u7fd4\u964d\u5230\u6700\u4f4e\u9ad8\u5ea6\u540e\u7684\u91cd\u65b0\u722c\u5347\u89d2\u5ea6\uff08\u5ea6\uff09\u3002\u8fbe\u5230\u6700\u9ad8\u9ad8\u5ea6\u540e\u81ea\u52a8\u5207\u6362\u6ed1\u7fd4\u3002")).defaultValue(45.0).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
-        this.cruiseClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u5de1\u822a\u722c\u5347\u89d2\u5ea6")).description("\u957f\u8ddd\u79bb\u5de1\u822a\u5230\u6700\u4f4e\u9ad8\u5ea6\u540e\u4f7f\u7528\u7684\u62ac\u5934\u89d2\u5ea6\uff08\u5ea6\uff09\u3002")).defaultValue(54.77).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
-        this.cruiseGlideAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("\u5de1\u822a\u6ed1\u7fd4\u89d2\u5ea6")).description("\u8fbe\u5230\u6700\u9ad8\u9ad8\u5ea6\u540e\u4f7f\u7528\u7684\u5411\u4e0b\u6ed1\u7fd4\u89d2\u5ea6\uff08\u5ea6\uff09\u3002\u6ed1\u7fd4\u9636\u6bb5\u4e0d\u4f7f\u7528\u70df\u82b1\uff0c\u964d\u5230\u6700\u4f4e\u9ad8\u5ea6\u540e\u91cd\u65b0\u722c\u5347\u3002")).defaultValue(37.72).range(0.0, 70.0).sliderRange(0.0, 70.0).build());
-        this.t18DirectionGroup = this.settings.createGroup("\u641c\u7d22\u65b9\u5411");
-        this.t18North = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u641c\u7d22\u5317\u65b9")).description("\u5141\u8bb8\u641c\u7d22\u4ee5\u5f00\u59cb\u641c\u7d22\u65f6\u7684\u4f4d\u7f6e\u4e3a\u4e2d\u5fc3\uff0c\u5317\u65b9\uff08-Z\uff09\u6247\u533a\u5185\u7684\u672b\u5730\u8239\u3002")).defaultValue(true)).build());
-        this.t18South = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u641c\u7d22\u5357\u65b9")).description("\u5141\u8bb8\u641c\u7d22\u4ee5\u5f00\u59cb\u641c\u7d22\u65f6\u7684\u4f4d\u7f6e\u4e3a\u4e2d\u5fc3\uff0c\u5357\u65b9\uff08+Z\uff09\u6247\u533a\u5185\u7684\u672b\u5730\u8239\u3002")).defaultValue(true)).build());
-        this.t18East = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u641c\u7d22\u4e1c\u65b9")).description("\u5141\u8bb8\u641c\u7d22\u4ee5\u5f00\u59cb\u641c\u7d22\u65f6\u7684\u4f4d\u7f6e\u4e3a\u4e2d\u5fc3\uff0c\u4e1c\u65b9\uff08+X\uff09\u6247\u533a\u5185\u7684\u672b\u5730\u8239\u3002")).defaultValue(true)).build());
-        this.t18West = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u641c\u7d22\u897f\u65b9")).description("\u5141\u8bb8\u641c\u7d22\u4ee5\u5f00\u59cb\u641c\u7d22\u65f6\u7684\u4f4d\u7f6e\u4e3a\u4e2d\u5fc3\uff0c\u897f\u65b9\uff08-X\uff09\u6247\u533a\u5185\u7684\u672b\u5730\u8239\u3002")).defaultValue(true)).build());
-        this.t19VisitedGroup = this.settings.createGroup("\u8bbf\u95ee\u8bb0\u5f55");
-        this.t19IgnoreVisited = this.t19VisitedGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("\u5ffd\u7565\u5df2\u8bbf\u95ee\u8bb0\u5f55")).description("\u5f00\u542f\u540e\u91cd\u65b0\u626b\u63cf\u6240\u6709\u9884\u6d4b\u672b\u5730\u8239\uff0c\u4e0d\u4f7f\u7528\u65e7\u7684\u201c\u5df2\u8bbf\u95ee\u8239\u201d\u5217\u8868\u3002\u9002\u5408\u65e7\u7248\u672c\u8bb0\u5f55\u5f02\u5e38\u65f6\u4e34\u65f6\u6062\u590d\u641c\u7d22\u3002")).defaultValue(false)).build());
+        this.startClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("起飞拉升角度")).description("首次起飞以及滑翔降到最低高度后的重新爬升角度（度）。达到最高高度后自动切换滑翔。")).defaultValue(45.0).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
+        this.cruiseClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航爬升角度")).description("长距离巡航到最低高度后使用的抬头角度（度）。")).defaultValue(54.77).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
+        this.cruiseGlideAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航滑翔角度")).description("达到最高高度后使用的向下滑翔角度（度）。滑翔阶段不使用烟花，降到最低高度后重新爬升。")).defaultValue(37.72).range(0.0, 70.0).sliderRange(0.0, 70.0).build());
+        this.t18DirectionGroup = this.settings.createGroup("搜索方向");
+        this.t18North = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索北方")).description("允许搜索以开始搜索时的位置为中心，北方（-Z）扇区内的末地船。")).defaultValue(true)).build());
+        this.t18South = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索南方")).description("允许搜索以开始搜索时的位置为中心，南方（+Z）扇区内的末地船。")).defaultValue(true)).build());
+        this.t18East = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索东方")).description("允许搜索以开始搜索时的位置为中心，东方（+X）扇区内的末地船。")).defaultValue(true)).build());
+        this.t18West = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索西方")).description("允许搜索以开始搜索时的位置为中心，西方（-X）扇区内的末地船。")).defaultValue(true)).build());
+        this.t19VisitedGroup = this.settings.createGroup("访问记录");
+        this.t19IgnoreVisited = this.t19VisitedGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("忽略已访问记录")).description("开启后重新扫描所有预测末地船，不使用旧的“已访问船”列表。适合旧版本记录异常时临时恢复搜索。")).defaultValue(false)).build());
         ElytraFlightUi20.remove(this.d, this.j);
         ElytraFlightUi20.remove(this.e, this.cruiseClimbAngle);
         ElytraFinderStatusHud.attach((Object)this);
     }
 
     public WWidget getWidget(GuiTheme theme) {
-        WSection section = theme.section((String)"\u9ed1\u540d\u5355", true);
-        WButton clear = (WButton)section.add((WWidget)theme.button((String)"\u6e05\u9664\u9ed1\u540d\u5355")).expandX().widget();
+        WSection section = theme.section((String)"黑名单", true);
+        WButton clear = (WButton)section.add((WWidget)theme.button((String)"清除黑名单")).expandX().widget();
         clear.action = () -> {
             List list = (List)this.o.get();
             synchronized (list) {
                 ((List)this.o.get()).clear();
             }
-            this.info((String)"\u9ed1\u540d\u5355\u5df2\u6e05\u7a7a.", new Object[0]);
+            this.info((String)"黑名单已清空.", new Object[0]);
         };
         ElytraVisitedUi22.enhance((Object)this, theme, section);
         return section;
@@ -435,9 +427,9 @@ extends Module {
         this.bf = StoragePhase.NONE;
         this.bg = 0;
         this.bl = -1;
-        this.info("\u5f00\u59cb\u641c\u7d22\u672b\u5730\u57ce (\u8303\u56f4=" + String.valueOf(this.g.get()) + " \u65b9\u5757)...", new Object[0]);
+        this.info("开始搜索末地城 (范围=" + String.valueOf(this.g.get()) + " 方块)...", new Object[0]);
         if (((Boolean)this.r.get()).booleanValue()) {
-            this.info("\u8c03\u8bd5\u65e5\u5fd7\u6587\u4ef6: " + String.valueOf(this.cl().toAbsolutePath()), new Object[0]);
+            this.info("调试日志文件: " + String.valueOf(this.cl().toAbsolutePath()), new Object[0]);
         }
         this.d();
     }
@@ -513,15 +505,15 @@ extends Module {
                         ((List)this.p.get()).add(t.d.getX() + "," + t.d.getY() + "," + t.d.getZ() + "," + String.valueOf(t.b));
                     }
                 }
-                this.info("\u627e\u5230 " + this.z.size() + " \u8258\u5e26\u8239\u672b\u5730\u57ce (\u5df2\u6392\u9664\u9ed1\u540d\u5355, \u8303\u56f4=" + range + ").", new Object[0]);
+                this.info("找到 " + this.z.size() + " 艘带船末地城 (已排除黑名单, 范围=" + range + ").", new Object[0]);
                 if (this.z.isEmpty()) {
                     if (this.aq < 10) {
                         ++this.aq;
-                        this.info("\u8303\u56f4\u5185\u6ca1\u6709\u672b\u5730\u8239\uff0c\u6269\u5927\u8303\u56f4 +" + this.aq * 500 + " \u683c\u91cd\u65b0\u641c\u7d22...", new Object[0]);
+                        this.info("范围内没有末地船，扩大范围 +" + this.aq * 500 + " 格重新搜索...", new Object[0]);
                         this.d();
                     } else {
                         this.aq = 0;
-                        this.p((String)"\u8303\u56f4\u5185\u6ca1\u6709\u672b\u5730\u8239\uff0c\u4efb\u52a1\u5b8c\u6210.");
+                        this.p((String)"范围内没有末地船，任务完成.");
                     }
                 } else {
                     this.aq = 0;
@@ -534,7 +526,7 @@ extends Module {
             }
             catch (Exception e) {
                 if (this.ac || generation != this.ad) break block18;
-                this.error("\u641c\u7d22\u5931\u8d25: " + e.getMessage(), new Object[0]);
+                this.error("搜索失败: " + e.getMessage(), new Object[0]);
                 this.x = State.IDLE;
                 this.q.set(false);
             }
@@ -576,7 +568,7 @@ extends Module {
 
     private void g() {
         if (this.aa >= this.z.size()) {
-            this.p((String)"\u5168\u90e8\u672b\u5730\u57ce\u5df2\u5904\u7406\uff0c\u4efb\u52a1\u5b8c\u6210.");
+            this.p((String)"全部末地城已处理，任务完成.");
             return;
         }
         this.ae = this.z.get(this.aa);
@@ -593,7 +585,7 @@ extends Module {
         this.ba = false;
         this.be = 0;
         this.ag = 0;
-        this.info("\u98de\u5411\u6700\u8fd1\u672a\u53bb\u8fc7\u7684\u8239 \u8fd1\u4f3c\u9f99\u5934=" + String.valueOf(this.ae.d) + " \u671d\u5411=" + String.valueOf(this.ae.b), new Object[0]);
+        this.info("飞向最近未去过的船 近似龙头=" + String.valueOf(this.ae.d) + " 朝向=" + String.valueOf(this.ae.b), new Object[0]);
         this.x = State.FLYING;
     }
 
@@ -605,8 +597,8 @@ extends Module {
             }
             ++this.ag;
             if (this.x != State.IDLE && this.x != State.DONE && ((Boolean)this.v.get()).booleanValue() && this.mc.player.getY() < (double)((Integer)this.w.get()).intValue()) {
-                this.warning("Y=" + String.format((String)"%.1f", this.mc.player.getY()) + " \u4f4e\u4e8e\u9608\u503c " + String.valueOf(this.w.get()) + "\uff0c\u4efb\u52a1\u5df2\u505c\u6b62.", new Object[0]);
-                LowYSafetyLogout.trigger((Object)this, (String)"\u4f4e\u9ad8\u5ea6\u4efb\u52a1\u505c\u6b62.");
+                this.warning("Y=" + String.format((String)"%.1f", this.mc.player.getY()) + " 低于阈值 " + String.valueOf(this.w.get()) + "，任务已停止.", new Object[0]);
+                LowYSafetyLogout.trigger((Object)this, (String)"低高度任务停止.");
                 return;
             }
             if (this.ao) {
@@ -639,9 +631,9 @@ extends Module {
             }
         }
         catch (Throwable t) {
-            this.error("\u4efb\u52a1\u5f02\u5e38: " + String.valueOf(t), new Object[0]);
+            this.error("任务异常: " + String.valueOf(t), new Object[0]);
             t.printStackTrace();
-            this.o((String)"\u4efb\u52a1\u5f02\u5e38\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"任务异常，停止任务.");
         }
     }
 
@@ -650,7 +642,7 @@ extends Module {
             return;
         }
         if (!this.ba && this.ag > 400) {
-            this.error((String)"\u8d77\u98de\u8d85\u65f6 (\u53ef\u80fd\u6ca1\u7a7f\u9798\u7fc5\u6216\u6ca1\u6709\u70df\u82b1).", new Object[0]);
+            this.error((String)"起飞超时 (可能没穿鞘翅或没有烟花).", new Object[0]);
             this.x = State.IDLE;
             this.q.set(false);
             this.cw();
@@ -699,14 +691,14 @@ extends Module {
                 if (this.mc.player.getY() >= (double)(lp.getY() + 25) || this.bd > 600) {
                     this.cr = 1;
                     this.bd = 0;
-                    this.info((String)"\u5df2\u62c9\u5347\u5230\u964d\u843d\u70b9\u4e0a\u65b9 25 \u683c\uff0c\u7528 pitch40 \u6a21\u5f0f\u98de\u5411\u964d\u843d\u70b9.", new Object[0]);
+                    this.info((String)"已拉升到降落点上方 25 格，用 pitch40 模式飞向降落点.", new Object[0]);
                 }
             } else if (this.cz(lp) <= 3.0 || this.bd > 600) {
                 this.cw();
                 this.ba = false;
                 this.cr = 0;
                 this.bd = 0;
-                this.info((String)"\u5df2\u56de\u5230\u964d\u843d\u70b9\u4e0a\u65b9\uff0c\u8fdb\u5165\u7f13\u964d.", new Object[0]);
+                this.info((String)"已回到降落点上方，进入缓降.", new Object[0]);
                 this.x = State.LANDING;
                 this.ag = 0;
             }
@@ -748,7 +740,7 @@ extends Module {
         } else {
             ++this.am;
             if (this.am == 1 && ((Boolean)this.r.get()).booleanValue() && !this.cg()) {
-                this.cm((String)"\u6ce8\u610f: \u5730\u5f62\u9ad8\u5ea6\u5224\u65ad\u4e0d\u8db3 (\u8239\u53ef\u80fd\u5728\u865a\u7a7a\u4e0a)\uff0c\u6539\u7531\u9f99\u5934\u626b\u63cf\u786e\u8ba4.");
+                this.cm((String)"注意: 地形高度判断不足 (船可能在虚空上)，改由龙头扫描确认.");
             }
             if (this.am % 20 != 0) {
                 path = 1;
@@ -776,13 +768,13 @@ extends Module {
                         this.al = exact.a;
                         this.af = ShipWaypoints.j(this.al, this.ae.b);
                         this.ak = true;
-                        this.info("\u5df2\u786e\u8ba4\u9f99\u5934: " + String.valueOf(this.al) + " \u671d\u5411=" + String.valueOf(this.ae.b), new Object[0]);
+                        this.info("已确认龙头: " + String.valueOf(this.al) + " 朝向=" + String.valueOf(this.ae.b), new Object[0]);
                         if (((Boolean)this.r.get()).booleanValue()) {
                             int realTop = this.mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, this.al.getX(), this.al.getZ());
-                            this.cm("head=(" + this.al.getX() + "," + this.al.getY() + "," + this.al.getZ() + ") \u9f99\u5934\u4e0b\u5730\u8868=" + realTop + " seedY=" + this.ae.d.getY());
+                            this.cm("head=(" + this.al.getX() + "," + this.al.getY() + "," + this.al.getZ() + ") 龙头下地表=" + realTop + " seedY=" + this.ae.d.getY());
                         }
                     } else {
-                        this.info("\u68c0\u6d4b\u9f99\u5934\u7b2c " + this.an + "/7 \u6b21\u672a\u627e\u5230 (\u76ee\u6807=" + this.ae.d.getX() + "," + this.ae.d.getZ() + ").", new Object[0]);
+                        this.info("检测龙头第 " + this.an + "/7 次未找到 (目标=" + this.ae.d.getX() + "," + this.ae.d.getZ() + ").", new Object[0]);
                     }
                 }
                 break;
@@ -792,7 +784,7 @@ extends Module {
             if (!this.ak && this.an >= 7) {
                 DragonHead last = this.de(this.ae.d, 10, 200);
                 if (last == null) {
-                    this.warning((String)"\u68c0\u6d4b 7 \u6b21\u4e14\u6574\u5217\u65e0\u9f99\u5934\uff0c\u5224\u5b9a\u4e3a\u5047\u57ce\uff0c\u52a0\u5165\u9ed1\u540d\u5355\u5e76\u91cd\u65b0\u641c\u7d22.", new Object[0]);
+                    this.warning((String)"检测 7 次且整列无龙头，判定为假城，加入黑名单并重新搜索.", new Object[0]);
                     this.cp(this.ae.d);
                     this.ap.add(this.cn(this.ae.d));
                     this.z.clear();
@@ -808,7 +800,7 @@ extends Module {
                 this.al = last.a;
                 this.af = ShipWaypoints.j(this.al, this.ae.b);
                 this.ak = true;
-                this.info("\u6574\u5217\u626b\u63cf\u53d1\u73b0\u9f99\u5934: " + String.valueOf(this.al) + " \u671d\u5411=" + String.valueOf(this.ae.b), new Object[0]);
+                this.info("整列扫描发现龙头: " + String.valueOf(this.al) + " 朝向=" + String.valueOf(this.ae.b), new Object[0]);
             }
         }
         if (path <= 2) {
@@ -822,11 +814,11 @@ extends Module {
                 this.au = true;
                 this.av = airFrame.getHeldItemStack().getItem() != Items.ELYTRA;
                 if (this.av) {
-                    this.info((String)"\u5c55\u793a\u6846\u91cc\u6ca1\u6709\u9798\u7fc5\uff0c\u4e0d\u964d\u843d\uff1a\u62c9\u5347\u5230 max-height \u4ee5\u4e0a\u540e\u8df3\u8fc7\u8be5\u8239.", new Object[0]);
+                    this.info((String)"展示框里没有鞘翅，不降落：拉升到 max-height 以上后跳过该船.", new Object[0]);
                     this.t();
                     return;
                 }
-                this.info((String)"\u5c55\u793a\u6846\u91cc\u6709\u9798\u7fc5\uff0c\u6309\u539f\u8ba1\u5212\u964d\u843d.", new Object[0]);
+                this.info((String)"展示框里有鞘翅，按原计划降落.", new Object[0]);
             }
             ++this.aw;
             if (this.aw > 120) {
@@ -881,7 +873,7 @@ extends Module {
         this.bf = StoragePhase.NONE;
         this.bg = 0;
         this.b();
-        this.info((String)"\u5371\u9669\u9ad8\u5ea6: \u4e2d\u6b62\u5b58\u50a8\u4f1a\u8bdd\uff0c\u5f3a\u5236\u62c9\u5347.", new Object[0]);
+        this.info((String)"危险高度: 中止存储会话，强制拉升.", new Object[0]);
     }
 
     boolean isLandingOrRecovering() {
@@ -907,7 +899,7 @@ extends Module {
         if (!this.ba && !this.mc.player.isOnGround() && this.mc.player.getY() < (double)(lp.getY() - 10)) {
             ++this.be;
             if (this.be > 3) {
-                this.o((String)"\u591a\u6b21\u504f\u79bb\u964d\u843d\u70b9\u65e0\u6cd5\u964d\u843d\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"多次偏离降落点无法降落，停止任务.");
                 return;
             }
             this.ba = true;
@@ -915,7 +907,7 @@ extends Module {
             this.bd = 0;
             this.bc = this.cy(lp) + 180.0f;
             this.ay = false;
-            this.info((String)"\u4f4e\u4e8e\u964d\u843d\u70b9 10 \u683c\uff0c\u53cd\u5411\u62c9\u5347 (\u76ee\u6807\u964d\u843d\u70b9\u4e0a\u65b9 25 \u683c).", new Object[0]);
+            this.info((String)"低于降落点 10 格，反向拉升 (目标降落点上方 25 格).", new Object[0]);
             this.x = State.RISING;
             this.ag = 0;
             return;
@@ -924,7 +916,7 @@ extends Module {
             if (hDist < 3.0) {
                 this.cw();
                 this.be = 0;
-                this.info((String)"\u5df2\u964d\u843d\u5728\u964d\u843d\u70b9.", new Object[0]);
+                this.info((String)"已降落在降落点.", new Object[0]);
                 this.x = State.COLLECTING;
                 this.y = CollectStep.TO_P1;
                 this.ag = 0;
@@ -1045,7 +1037,7 @@ extends Module {
                 if (frame != null && this.ag == 1) {
                     boolean bl = this.at = frame.getHeldItemStack().getItem() == Items.ELYTRA;
                     if (!this.at) {
-                        this.info((String)"\u5c55\u793a\u6846\u91cc\u6ca1\u6709\u9798\u7fc5\uff0c\u76f4\u63a5\u79bb\u5f00\u8be5\u8239.", new Object[0]);
+                        this.info((String)"展示框里没有鞘翅，直接离开该船.", new Object[0]);
                         this.safeExitAfterCollectFailure();
                         return;
                     }
@@ -1059,7 +1051,7 @@ extends Module {
                     break;
                 }
                 if (this.ag <= 80) break;
-                this.info((String)"\u653b\u51fb\u5c55\u793a\u6846\u540e\u6ca1\u6709\u9798\u7fc5\u6389\u843d\uff0c\u76f4\u63a5\u79bb\u5f00\u8be5\u8239.", new Object[0]);
+                this.info((String)"攻击展示框后没有鞘翅掉落，直接离开该船.", new Object[0]);
                 this.safeExitAfterCollectFailure();
                 break;
             }
@@ -1077,7 +1069,7 @@ extends Module {
                     break;
                 }
                 if (this.ag <= 60) break;
-                this.info((String)"\u9798\u7fc5\u6389\u843d\u6d88\u5931\u672a\u62fe\u53d6\uff0c\u76f4\u63a5\u79bb\u5f00\u8be5\u8239.", new Object[0]);
+                this.info((String)"鞘翅掉落消失未拾取，直接离开该船.", new Object[0]);
                 this.safeExitAfterCollectFailure();
                 break;
             }
@@ -1104,14 +1096,14 @@ extends Module {
             case 8: {
                 if (!this.cb(this.af.j, 2.5)) break;
                 this.cp(this.ae.d);
-                this.info((String)"\u8be5\u8239\u5b8c\u6210\uff0c\u52a0\u5165\u9ed1\u540d\u5355.", new Object[0]);
+                this.info((String)"该船完成，加入黑名单.", new Object[0]);
                 this.q();
                 break;
             }
             case 9: {
                 if (!this.cb(this.af.j.down(4), 2.5)) break;
                 this.cw();
-                this.info((String)"\u5df2\u56de\u5230\u964d\u843d\u70b9\uff0c\u8d77\u98de\u79bb\u5f00.", new Object[0]);
+                this.info((String)"已回到降落点，起飞离开.", new Object[0]);
                 this.x = State.RISING;
                 this.ag = 0;
             }
@@ -1163,7 +1155,7 @@ extends Module {
         this.bo = this.ca() <= (Integer)this.t.get();
         this.bp = this.bs();
         if (this.bo || this.bp) {
-            this.info("\u5b58\u50a8\u4f1a\u8bdd: \u5b58\u9798\u7fc5=" + this.bo + ", \u8865\u8d27=" + this.bp, new Object[0]);
+            this.info("存储会话: 存鞘翅=" + this.bo + ", 补货=" + this.bp, new Object[0]);
             StorageReturn.markStart((Object)this);
             this.bf = StoragePhase.PLACE_EC;
             this.bg = 0;
@@ -1193,7 +1185,7 @@ extends Module {
 
     private void t() {
         this.cp(this.ae.d);
-        this.info((String)"\u8be5\u8239\u8df3\u8fc7\u5e76\u52a0\u5165\u9ed1\u540d\u5355\uff0c\u91cd\u65b0\u641c\u7d22\u6700\u8fd1\u672a\u53bb\u8fc7\u7684\u8239.", new Object[0]);
+        this.info((String)"该船跳过并加入黑名单，重新搜索最近未去过的船.", new Object[0]);
         this.z.clear();
         this.aa = 0;
         this.aq = 0;
@@ -1203,7 +1195,7 @@ extends Module {
         this.cw();
         this.d();
         if (this.mc.player.isOnGround() && this.af != null && this.cz(this.af.j) > 2.5) {
-            this.info((String)"\u5df2\u964d\u843d\uff1a\u5148\u56de\u964d\u843d\u70b9\u4fee\u6b63\u8d77\u98de\u65b9\u5411\u540e\u518d\u79bb\u5f00.", new Object[0]);
+            this.info((String)"已降落：先回降落点修正起飞方向后再离开.", new Object[0]);
             this.x = State.COLLECTING;
             this.y = CollectStep.LEAVE_SHIP;
             this.ag = 0;
@@ -1218,7 +1210,7 @@ extends Module {
         try {
             ++this.bg;
             if (this.bg > 1200) {
-                this.o("\u5b58\u50a8\u4f1a\u8bdd\u8d85\u65f6 (\u9636\u6bb5=" + String.valueOf((Object)this.bf) + ")\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o("存储会话超时 (阶段=" + String.valueOf((Object)this.bf) + ")，停止任务.");
                 return;
             }
             this.cw();
@@ -1257,7 +1249,7 @@ extends Module {
                         this.cu = true;
                         this.cv = true;
                         this.bo = true;
-                        this.info("\u8865\u7ed9\u6682\u505c: \u80cc\u5305\u5269\u4f59 " + this.ca() + " \u69fd\uff0c\u5148\u56de\u6536\u8865\u7ed9\u76d2\u3001\u5b58\u9798\u7fc5\u817e\u80cc\u5305.", new Object[0]);
+                        this.info("补给暂停: 背包剩余 " + this.ca() + " 槽，先回收补给盒、存鞘翅腾背包.", new Object[0]);
                         this.bf = StoragePhase.MINE_BOX;
                         this.bg = 0;
                         break;
@@ -1276,9 +1268,9 @@ extends Module {
             }
         }
         catch (Throwable t) {
-            this.error("\u5b58\u50a8\u4f1a\u8bdd\u5f02\u5e38: " + String.valueOf(t), new Object[0]);
+            this.error("存储会话异常: " + String.valueOf(t), new Object[0]);
             t.printStackTrace();
-            this.o((String)"\u5b58\u50a8\u4f1a\u8bdd\u5f02\u5e38\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"存储会话异常，停止任务.");
         }
     }
 
@@ -1287,7 +1279,7 @@ extends Module {
             BlockPos existing;
             if (this.cs == 0 && (existing = this.w(5)) != null) {
                 this.bi = existing;
-                this.info("\u5b58\u50a8: \u53d1\u73b0\u5468\u56f4\u5df2\u6709\u672b\u5f71\u7bb1 " + String.valueOf(existing) + "\uff0c\u76f4\u63a5\u6253\u5f00.", new Object[0]);
+                this.info("存储: 发现周围已有末影箱 " + String.valueOf(existing) + "，直接打开.", new Object[0]);
                 this.bf = StoragePhase.OPEN_EC;
                 this.bg = 0;
                 this.cn = 0;
@@ -1295,18 +1287,18 @@ extends Module {
             }
             int ecSlot = this.bx(Items.ENDER_CHEST);
             if (ecSlot == -1) {
-                this.o((String)"\u80cc\u5305\u91cc\u6ca1\u6709\u672b\u5f71\u7bb1\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"背包里没有末影箱，停止任务.");
                 return;
             }
             this.bn = this.bu(Items.ENDER_CHEST);
             this.aw(ecSlot);
             this.bs = this.bm(null);
             if (this.bs.isEmpty() && this.af != null && this.af.l != null) {
-                this.info("\u9644\u8fd1\u65e0\u7a7a\u4f4d\uff0c\u6539\u7528\u68c0\u6d4b\u6f5c\u5f71\u8d1d\u7684\u4f4d\u7f6e " + String.valueOf(this.af.l) + " \u9644\u8fd1\u653e\u7f6e.", new Object[0]);
+                this.info("附近无空位，改用检测潜影贝的位置 " + String.valueOf(this.af.l) + " 附近放置.", new Object[0]);
                 this.bs = this.bn(this.af.l, null);
             }
             if (this.bs.isEmpty()) {
-                this.o((String)"\u627e\u4e0d\u5230\u653e\u7f6e\u672b\u5f71\u7bb1\u7684\u4f4d\u7f6e\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"找不到放置末影箱的位置，停止任务.");
                 return;
             }
             this.bt = 0;
@@ -1315,7 +1307,7 @@ extends Module {
         }
         if (this.bg >= 4 && this.bg - this.bu >= 8) {
             if (this.bt >= this.bs.size()) {
-                this.o((String)"\u672b\u5f71\u7bb1\u653e\u7f6e\u5931\u8d25 (\u5df2\u5c1d\u8bd5\u6240\u6709\u5019\u9009\u4f4d\u7f6e)\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"末影箱放置失败 (已尝试所有候选位置)，停止任务.");
                 return;
             }
             BlockPos spot = this.bs.get(this.bt);
@@ -1343,7 +1335,7 @@ extends Module {
             return;
         }
         if (this.bg > 80) {
-            this.o((String)"\u672b\u5f71\u7bb1\u653e\u7f6e\u5931\u8d25 (\u8d85\u65f6)\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"末影箱放置失败 (超时)，停止任务.");
         }
     }
 
@@ -1365,7 +1357,7 @@ extends Module {
     private void x() {
         if (this.bg == 1) {
             if (this.bi == null || !this.bj(this.mc.world.getBlockState(this.bi))) {
-                this.info((String)"\u672b\u5f71\u7bb1\u4e0d\u5728\u539f\u4f4d\uff0c\u91cd\u65b0\u653e\u7f6e.", new Object[0]);
+                this.info((String)"末影箱不在原位，重新放置.", new Object[0]);
                 this.bf = StoragePhase.PLACE_EC;
                 this.bg = 0;
                 return;
@@ -1376,7 +1368,7 @@ extends Module {
             BlockPos off = this.ao(this.bi);
             if (off != null && !PathManagers.get().isPathing()) {
                 PathManagers.get().moveTo(off, false);
-                this.info((String)"\u5b58\u50a8: \u73a9\u5bb6\u7ad9\u5728\u672b\u5f71\u7bb1\u4e0a\uff0c\u5148\u8d70\u4e0b\u6765\u518d\u6253\u5f00.", new Object[0]);
+                this.info((String)"存储: 玩家站在末影箱上，先走下来再打开.", new Object[0]);
             }
             if (this.an(this.bi)) {
                 return;
@@ -1399,10 +1391,10 @@ extends Module {
             if (this.an(this.bi)) {
                 this.cw = false;
                 this.bg = 0;
-                this.info((String)"\u6253\u5f00\u672b\u5f71\u7bb1\u5931\u8d25\u4e14\u73a9\u5bb6\u7ad9\u5728\u672b\u5f71\u7bb1\u4e0a\uff0c\u5148\u8d70\u4e0b\u6765\u518d\u91cd\u8bd5.", new Object[0]);
+                this.info((String)"打开末影箱失败且玩家站在末影箱上，先走下来再重试.", new Object[0]);
                 return;
             }
-            this.warning((String)"\u6253\u5f00\u672b\u5f71\u7bb1\u5931\u8d25 (\u5df2\u5c1d\u8bd5 5 \u6b21)\uff0c\u653e\u7f6e\u65b0\u7684\u672b\u5f71\u7bb1\u518d\u8bd5.", new Object[0]);
+            this.warning((String)"打开末影箱失败 (已尝试 5 次)，放置新的末影箱再试.", new Object[0]);
             ++this.cs;
             this.bf = StoragePhase.PLACE_EC;
             this.bg = 0;
@@ -1415,7 +1407,7 @@ extends Module {
         ScreenHandler sh = this.mc.player.currentScreenHandler;
         int rows = this.aq();
         if (sh == null || rows <= 0) {
-            this.o((String)"\u672b\u5f71\u7bb1\u754c\u9762\u5f02\u5e38\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"末影箱界面异常，停止任务.");
             return;
         }
         if (this.bg < 3) {
@@ -1454,10 +1446,10 @@ extends Module {
             }
             this.ca = 0;
             if (this.cp) {
-                this.o((String)"\u80cc\u5305\u65e0\u7a7a\u4f4d\u653e\u6f5c\u5f71\u76d2\uff0c\u65e0\u6cd5\u8865\u8d27\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"背包无空位放潜影盒，无法补货，停止任务.");
                 return;
             }
-            this.o((String)"\u80cc\u5305\u65e0\u7a7a\u4f4d\u653e\u6f5c\u5f71\u76d2\uff0c\u65e0\u6cd5\u5b58\u9798\u7fc5\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"背包无空位放潜影盒，无法存鞘翅，停止任务.");
             return;
         }
         if (!this.ay()) {
@@ -1466,7 +1458,7 @@ extends Module {
         if (this.bl != -1) {
             int screenSlot = this.az(rows, this.bl);
             if (this.ba(sh, rows) == -1) {
-                this.o((String)"\u672b\u5f71\u7bb1\u5df2\u6ee1\uff0c\u65e0\u6cd5\u5f52\u8fd8\u6f5c\u5f71\u76d2\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"末影箱已满，无法归还潜影盒，停止任务.");
                 return;
             }
             this.ah(SlotActionType.QUICK_MOVE, screenSlot);
@@ -1483,7 +1475,7 @@ extends Module {
             Item item = st.getItem();
             items.append(item.getName(item.getDefaultStack()).getString()).append((String)"(").append(st.getCount()).append((String)") ");
         }
-        this.info("\u5b58\u50a8: \u672b\u5f71\u7bb1\u884c\u6570=" + rows + " \u975e\u7a7a\u69fd=" + nonEmpty + " [" + String.valueOf(items) + "]", new Object[0]);
+        this.info("存储: 末影箱行数=" + rows + " 非空槽=" + nonEmpty + " [" + String.valueOf(items) + "]", new Object[0]);
         if (this.bo) {
             boolean bl = this.bo = this.bv() > 0;
         }
@@ -1513,24 +1505,24 @@ extends Module {
                 return;
             }
             if (this.ca() == 0) {
-                this.p((String)"\u80cc\u5305\u4e0e\u672b\u5f71\u7bb1\u5168\u90e8\u653e\u6ee1\uff0c\u4efb\u52a1\u5b8c\u6210.");
+                this.p((String)"背包与末影箱全部放满，任务完成.");
                 return;
             }
-            this.info((String)"\u6ca1\u6709\u7a7a\u4f4d\u6f5c\u5f71\u76d2\uff0c\u9798\u7fc5\u7559\u5728\u80cc\u5305.", new Object[0]);
+            this.info((String)"没有空位潜影盒，鞘翅留在背包.", new Object[0]);
             this.bo = false;
         }
         if (this.bp) {
             if (this.cv) {
                 this.cv = false;
                 this.ct = 0;
-                this.info((String)"\u5b58\u50a8: \u5b58\u9798\u7fc5\u817e\u51fa\u7a7a\u95f4\uff0c\u4ece\u672b\u5f71\u7bb1\u5f00\u5934\u91cd\u65b0\u626b\u63cf\u8865\u7ed9.", new Object[0]);
+                this.info((String)"存储: 存鞘翅腾出空间，从末影箱开头重新扫描补给.", new Object[0]);
             }
             if (this.ct > this.ar(rows)) {
                 if (this.bs()) {
-                    this.o((String)"\u7269\u8d44\u4e0d\u8db3 (\u672b\u5f71\u7bb1\u5185\u5df2\u904d\u5386\u5b8c\u6240\u6709\u6f5c\u5f71\u76d2)\uff0c\u505c\u6b62\u4efb\u52a1.");
+                    this.o((String)"物资不足 (末影箱内已遍历完所有潜影盒)，停止任务.");
                     return;
                 }
-                this.info((String)"\u5b58\u50a8: \u8865\u8d27\u904d\u5386\u5b8c\u6210.", new Object[0]);
+                this.info((String)"存储: 补货遍历完成.", new Object[0]);
                 this.bp = false;
                 this.bf = StoragePhase.MINE_EC;
                 this.bg = 0;
@@ -1545,7 +1537,7 @@ extends Module {
                             this.ct = i + 1;
                             this.ah(SlotActionType.QUICK_MOVE, i);
                             Item item = st.getItem();
-                            this.info("\u5b58\u50a8: \u4ece\u672b\u5f71\u7bb1\u76f4\u63a5\u62ff\u53d6\u6563\u653e\u7269\u8d44 " + item.getName(item.getDefaultStack()).getString() + ".", new Object[0]);
+                            this.info("存储: 从末影箱直接拿取散放物资 " + item.getName(item.getDefaultStack()).getString() + ".", new Object[0]);
                         } else {
                             this.ct = i + 1;
                         }
@@ -1583,7 +1575,7 @@ extends Module {
                 this.mc.player.closeHandledScreen();
             }
             if (this.bg > 40) {
-                this.o((String)"\u5173\u95ed\u5bb9\u5668\u754c\u9762\u8d85\u65f6\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"关闭容器界面超时，停止任务.");
                 return;
             }
             return;
@@ -1599,19 +1591,19 @@ extends Module {
     private void aa() {
         if (this.bg == 1) {
             if (this.bl == -1) {
-                this.o((String)"\u6f5c\u5f71\u76d2\u69fd\u4f4d\u4e22\u5931\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"潜影盒槽位丢失，停止任务.");
                 return;
             }
             this.bl = this.aw(this.bl);
             this.bs = this.bo(this.bi);
             this.cq = false;
             if (this.bs.isEmpty()) {
-                this.info((String)"\u9644\u8fd1\u6ca1\u6709\u6302\u653e\u4f4d\u7f6e (\u7a7a\u6c14+\u4e0a\u65b9\u5b9e\u5fc3)\uff0c\u6539\u7528\u5730\u677f\u653e\u7f6e.", new Object[0]);
+                this.info((String)"附近没有挂放位置 (空气+上方实心)，改用地板放置.", new Object[0]);
                 this.bs = this.bp(this.bi);
                 this.cq = true;
             }
             if (this.bs.isEmpty()) {
-                this.o((String)"\u627e\u4e0d\u5230\u653e\u7f6e\u6f5c\u5f71\u76d2\u7684\u4f4d\u7f6e (\u9700\u8981\u7a7a\u6c14\u683c\u4e14\u4e0a\u65b9\u6709\u65b9\u5757)\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"找不到放置潜影盒的位置 (需要空气格且上方有方块)，停止任务.");
                 return;
             }
             this.bt = 0;
@@ -1622,17 +1614,17 @@ extends Module {
             BlockPos spot;
             if (this.bt >= this.bs.size()) {
                 if (!this.cq) {
-                    this.info((String)"\u6302\u653e\u4f4d\u7f6e\u5168\u90e8\u653e\u7f6e\u5931\u8d25\uff0c\u6539\u7528\u5730\u677f\u653e\u7f6e.", new Object[0]);
+                    this.info((String)"挂放位置全部放置失败，改用地板放置.", new Object[0]);
                     this.bs = this.bp(this.bi);
                     this.cq = true;
                     this.bt = 0;
                     this.bv = 0;
                     if (this.bs.isEmpty()) {
-                        this.o((String)"\u6f5c\u5f71\u76d2\u653e\u7f6e\u5931\u8d25 (\u627e\u4e0d\u5230\u5730\u677f\u653e\u7f6e\u4f4d\u7f6e)\uff0c\u505c\u6b62\u4efb\u52a1.");
+                        this.o((String)"潜影盒放置失败 (找不到地板放置位置)，停止任务.");
                         return;
                     }
                 } else {
-                    this.o((String)"\u6f5c\u5f71\u76d2\u653e\u7f6e\u5931\u8d25 (\u5df2\u5c1d\u8bd5\u6240\u6709\u5019\u9009\u4f4d\u7f6e)\uff0c\u505c\u6b62\u4efb\u52a1.");
+                    this.o((String)"潜影盒放置失败 (已尝试所有候选位置)，停止任务.");
                     return;
                 }
             }
@@ -1665,14 +1657,14 @@ extends Module {
             return;
         }
         if (this.bg > 160) {
-            this.o((String)"\u6f5c\u5f71\u76d2\u653e\u7f6e\u5931\u8d25 (\u8d85\u65f6)\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"潜影盒放置失败 (超时)，停止任务.");
         }
     }
 
     private void ab() {
         if (this.bg == 1) {
             if (this.bj == null || !this.bi(this.mc.world.getBlockState(this.bj))) {
-                this.warning((String)"\u6f5c\u5f71\u76d2\u4e0d\u5728\u539f\u4f4d\uff0c\u6316\u6389\u91cd\u6765.", new Object[0]);
+                this.warning((String)"潜影盒不在原位，挖掉重来.", new Object[0]);
                 this.bf = StoragePhase.MINE_BOX;
                 this.bg = 0;
                 return;
@@ -1683,7 +1675,7 @@ extends Module {
             BlockPos off = this.ao(this.bj);
             if (off != null && !PathManagers.get().isPathing()) {
                 PathManagers.get().moveTo(off, false);
-                this.info((String)"\u5b58\u50a8: \u73a9\u5bb6\u7ad9\u5728\u6f5c\u5f71\u76d2\u4e0a\uff0c\u5148\u8d70\u4e0b\u6765\u518d\u6253\u5f00.", new Object[0]);
+                this.info((String)"存储: 玩家站在潜影盒上，先走下来再打开.", new Object[0]);
             }
             if (this.an(this.bj)) {
                 return;
@@ -1714,10 +1706,10 @@ extends Module {
                 this.bg = 0;
                 this.cn = 0;
                 this.co = -1;
-                this.info((String)"\u6253\u5f00\u6f5c\u5f71\u76d2\u5931\u8d25\u4e14\u73a9\u5bb6\u7ad9\u5728\u6f5c\u5f71\u76d2\u4e0a\uff0c\u5148\u8d70\u4e0b\u6765\u518d\u91cd\u8bd5.", new Object[0]);
+                this.info((String)"打开潜影盒失败且玩家站在潜影盒上，先走下来再重试.", new Object[0]);
                 return;
             }
-            this.warning((String)"\u6253\u5f00\u6f5c\u5f71\u76d2\u5931\u8d25 (\u5df2\u5c1d\u8bd5 5 \u6b21)\uff0c\u6316\u6389\u91cd\u6765.", new Object[0]);
+            this.warning((String)"打开潜影盒失败 (已尝试 5 次)，挖掉重来.", new Object[0]);
             this.bf = StoragePhase.MINE_BOX;
             this.bg = 0;
             this.cn = 0;
@@ -1741,7 +1733,7 @@ extends Module {
         }
         if (this.cd == -1) {
             this.cd = this.as(rows);
-            this.info((String)"\u5b58\u50a8: \u5f00\u59cb\u5f80\u6f5c\u5f71\u76d2\u5b58\u9798\u7fc5.", new Object[0]);
+            this.info((String)"存储: 开始往潜影盒存鞘翅.", new Object[0]);
         }
         if (this.cl >= 0) {
             if (sh.getSlot(this.cl).getStack().getItem() == Items.ELYTRA) {
@@ -1750,7 +1742,7 @@ extends Module {
                     this.cd = -1;
                     this.cl = -1;
                     this.cm = 0;
-                    this.info((String)"\u5b58\u50a8: \u6f5c\u5f71\u76d2\u5df2\u6ee1.", new Object[0]);
+                    this.info((String)"存储: 潜影盒已满.", new Object[0]);
                     this.bq = StoragePhase.MINE_BOX;
                     this.bf = StoragePhase.CLOSE_SCREEN;
                     this.bg = 0;
@@ -1768,7 +1760,7 @@ extends Module {
         }
         if (src == -1) {
             this.cd = -1;
-            this.info((String)"\u5b58\u50a8: \u9798\u7fc5\u5df2\u5168\u90e8\u5b58\u5165\u6f5c\u5f71\u76d2.", new Object[0]);
+            this.info((String)"存储: 鞘翅已全部存入潜影盒.", new Object[0]);
             this.bq = StoragePhase.MINE_BOX;
             this.bf = StoragePhase.CLOSE_SCREEN;
             this.bg = 0;
@@ -1784,7 +1776,7 @@ extends Module {
         ScreenHandler sh = this.mc.player.currentScreenHandler;
         int rows = this.aq();
         if (sh == null || rows <= 0) {
-            this.o((String)"\u6f5c\u5f71\u76d2\u754c\u9762\u5f02\u5e38\uff0c\u505c\u6b62\u4efb\u52a1.");
+            this.o((String)"潜影盒界面异常，停止任务.");
             return;
         }
         if (this.bg < 3) {
@@ -1820,22 +1812,22 @@ extends Module {
                             int elytra = this.bf(sh, rows);
                             if (elytra != -1) {
                                 this.bw.add(new MoveOp(elytra, boxFree));
-                                this.info((String)"\u5b58\u50a8: \u80cc\u5305\u7a7a\u95f4\u4e0d\u8db3\uff0c\u5148\u628a\u9798\u7fc5\u653e\u5165\u76d2\u5b50\u817e\u51fa\u7a7a\u4f4d.", new Object[0]);
+                                this.info((String)"存储: 背包空间不足，先把鞘翅放入盒子腾出空位.", new Object[0]);
                             } else {
                                 int junk = this.bg(sh, rows, rules);
                                 if (junk != -1) {
                                     this.bw.add(new MoveOp(junk, boxFree));
-                                    this.info((String)"\u5b58\u50a8: \u80cc\u5305\u5df2\u6ee1\uff0c\u5148\u628a\u6742\u7269\u653e\u5165\u76d2\u5b50\u817e\u51fa\u7a7a\u4f4d.", new Object[0]);
+                                    this.info((String)"存储: 背包已满，先把杂物放入盒子腾出空位.", new Object[0]);
                                 } else {
                                     this.ck.add(target.e);
                                     Item item = target.e;
-                                    this.info("\u5b58\u50a8: \u80cc\u5305\u65e0\u7a7a\u4f4d\u4e14\u65e0\u6742\u7269\u53ef\u817e\uff0c\u8865\u8d27 " + item.getName(item.getDefaultStack()).getString() + " \u8df3\u8fc7.", new Object[0]);
+                                    this.info("存储: 背包无空位且无杂物可腾，补货 " + item.getName(item.getDefaultStack()).getString() + " 跳过.", new Object[0]);
                                 }
                             }
                         } else {
                             this.ck.add(target.e);
                             Item item = target.e;
-                            this.info("\u5b58\u50a8: \u76d2\u5b50\u5df2\u6ee1\u65e0\u6cd5\u817e\u4f4d\uff0c\u8865\u8d27 " + item.getName(item.getDefaultStack()).getString() + " \u8df3\u8fc7.", new Object[0]);
+                            this.info("存储: 盒子已满无法腾位，补货 " + item.getName(item.getDefaultStack()).getString() + " 跳过.", new Object[0]);
                         }
                     }
                     return;
@@ -1855,7 +1847,7 @@ extends Module {
         this.cj = 0;
         this.ch = -1;
         this.ci = 0;
-        this.info((String)"\u5b58\u50a8: \u672c\u76d2\u7269\u8d44\u5df2\u62ff\u53d6\u5b8c\u6bd5 (\u6240\u6709\u80fd\u62ff\u4e14\u9700\u8981\u7684).", new Object[0]);
+        this.info((String)"存储: 本盒物资已拿取完毕 (所有能拿且需要的).", new Object[0]);
         this.bq = StoragePhase.MINE_BOX;
         this.bf = StoragePhase.CLOSE_SCREEN;
         this.bg = 0;
@@ -1868,13 +1860,13 @@ extends Module {
                 this.bh = -1;
                 PathManagers.get().stop();
                 if (this.by() == -1) {
-                    this.o((String)"\u9700\u8981\u7cbe\u51c6\u91c7\u96c6\u5de5\u5177\u624d\u80fd\u56de\u6536\u6f5c\u5f71\u76d2\uff0c\u505c\u6b62\u4efb\u52a1.");
+                    this.o((String)"需要精准采集工具才能回收潜影盒，停止任务.");
                     return;
                 }
                 PathManagers.get().mine(s.getBlock());
-                this.info((String)"\u7528 baritone (\u7cbe\u51c6\u91c7\u96c6) \u6316\u6398\u6f5c\u5f71\u76d2.", new Object[0]);
+                this.info((String)"用 baritone (精准采集) 挖掘潜影盒.", new Object[0]);
             } else if (this.bg > 600) {
-                this.o((String)"baritone \u6316\u6398\u6f5c\u5f71\u76d2\u8d85\u65f6\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"baritone 挖掘潜影盒超时，停止任务.");
             }
             return;
         }
@@ -1890,7 +1882,7 @@ extends Module {
             return;
         }
         if (this.bg > this.bh + 200) {
-            this.warning((String)"\u6f5c\u5f71\u76d2\u6389\u843d\u672a\u62fe\u53d6\uff0c\u7ee7\u7eed\u4efb\u52a1.", new Object[0]);
+            this.warning((String)"潜影盒掉落未拾取，继续任务.", new Object[0]);
             this.bl = -1;
             this.bk = false;
             this.bf = this.bo || this.bp ? StoragePhase.OPEN_EC : StoragePhase.MINE_EC;
@@ -1911,13 +1903,13 @@ extends Module {
                 this.bh = -1;
                 PathManagers.get().stop();
                 if (this.by() == -1) {
-                    this.o((String)"\u9700\u8981\u7cbe\u51c6\u91c7\u96c6\u5de5\u5177\u624d\u80fd\u56de\u6536\u672b\u5f71\u7bb1\uff0c\u505c\u6b62\u4efb\u52a1.");
+                    this.o((String)"需要精准采集工具才能回收末影箱，停止任务.");
                     return;
                 }
                 PathManagers.get().mine(Blocks.ENDER_CHEST);
-                this.info((String)"\u7528 baritone (\u7cbe\u51c6\u91c7\u96c6) \u6316\u6398\u672b\u5f71\u7bb1.", new Object[0]);
+                this.info((String)"用 baritone (精准采集) 挖掘末影箱.", new Object[0]);
             } else if (this.bg > 600) {
-                this.o((String)"baritone \u6316\u6398\u672b\u5f71\u7bb1\u8d85\u65f6\uff0c\u505c\u6b62\u4efb\u52a1.");
+                this.o((String)"baritone 挖掘末影箱超时，停止任务.");
             }
             return;
         }
@@ -1930,7 +1922,7 @@ extends Module {
             return;
         }
         if (this.bg > this.bh + 400) {
-            this.warning((String)"\u672b\u5f71\u7bb1\u6389\u843d\u672a\u62fe\u53d6 (\u6316\u672b\u5f71\u7bb1\u9700\u8981\u7cbe\u51c6\u91c7\u96c6)\uff0c\u7ee7\u7eed\u4efb\u52a1.", new Object[0]);
+            this.warning((String)"末影箱掉落未拾取 (挖末影箱需要精准采集)，继续任务.", new Object[0]);
             this.ag();
             return;
         }
@@ -1945,7 +1937,7 @@ extends Module {
         this.bg = 0;
         this.bh = -1;
         if (this.x == State.COLLECTING && this.y == CollectStep.EQUIP) {
-            this.info((String)"\u8239\u65c1\u5b58\u50a8\u4f1a\u8bdd\u7ed3\u675f\uff0c\u5148\u8d70\u56de\u964d\u843d\u70b9\u518d\u8d77\u98de.", new Object[0]);
+            this.info((String)"船旁存储会话结束，先走回降落点再起飞.", new Object[0]);
             this.n(CollectStep.EXIT_P1);
         } else {
             StorageReturn.begin((Object)this);
@@ -2291,19 +2283,19 @@ extends Module {
         for (String entry : (List<String>)this.u.get()) {
             String[] p = entry.split((String)";");
             if (p.length < 3) {
-                this.warning("\u7269\u8d44\u914d\u7f6e\u683c\u5f0f\u9519\u8bef: " + entry, new Object[0]);
+                this.warning("物资配置格式错误: " + entry, new Object[0]);
                 continue;
             }
             Identifier id = Identifier.tryParse((String)p[0].trim());
             if (id == null || Registries.ITEM.get(id) == Items.AIR) {
-                this.warning("\u672a\u77e5\u7269\u54c1: " + p[0], new Object[0]);
+                this.warning("未知物品: " + p[0], new Object[0]);
                 continue;
             }
             try {
                 out.add(new SupplyRule((Item)Registries.ITEM.get(id), Integer.parseInt(p[1].trim()), Integer.parseInt(p[2].trim())));
             }
             catch (NumberFormatException e) {
-                this.warning("\u7269\u8d44\u6570\u91cf\u683c\u5f0f\u9519\u8bef: " + entry, new Object[0]);
+                this.warning("物资数量格式错误: " + entry, new Object[0]);
             }
         }
         return out;
@@ -2597,7 +2589,7 @@ extends Module {
             }
         }
         catch (Exception e) {
-            this.error("\u8c03\u8bd5\u65e5\u5fd7\u5199\u5165\u5931\u8d25: " + e.getMessage(), new Object[0]);
+            this.error("调试日志写入失败: " + e.getMessage(), new Object[0]);
         }
     }
 
@@ -2632,9 +2624,9 @@ extends Module {
         }
         if (frame != null) {
             this.mc.interactionManager.attackEntity((PlayerEntity)this.mc.player, (Entity)frame);
-            this.info((String)"\u653b\u51fb\u5c55\u793a\u6846.", new Object[0]);
+            this.info((String)"攻击展示框.", new Object[0]);
         } else {
-            this.info((String)"\u672a\u627e\u5230\u5c55\u793a\u6846.", new Object[0]);
+            this.info((String)"未找到展示框.", new Object[0]);
         }
     }
 
@@ -2654,7 +2646,7 @@ extends Module {
             return;
         }
         InvUtils.move().from(slot).toArmor(2);
-        this.info((String)"\u5df2\u7a7f\u4e0a\u9798\u7fc5.", new Object[0]);
+        this.info((String)"已穿上鞘翅.", new Object[0]);
     }
 
     private boolean ct() {
@@ -2675,7 +2667,7 @@ extends Module {
             FindItemResult inv = InvUtils.find((Item[])new Item[]{Items.FIREWORK_ROCKET});
             if (inv.found()) {
                 InvUtils.move().from(inv.slot()).toHotbar(1);
-                this.info((String)"\u7269\u54c1\u680f\u6ca1\u6709\u70df\u82b1\uff0c\u4ece\u80cc\u5305\u8c03\u53d6\u653e\u5230\u7b2c 2 \u4e2a\u69fd\u4f4d.", new Object[0]);
+                this.info((String)"物品栏没有烟花，从背包调取放到第 2 个槽位.", new Object[0]);
             }
             return;
         }

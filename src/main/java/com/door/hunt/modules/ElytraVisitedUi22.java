@@ -23,22 +23,22 @@ public final class ElytraVisitedUi22 {
             return;
         }
         try {
-            wSection.add((WWidget)guiTheme.horizontalSeparator("\u9ed1\u540d\u5355 / \u5df2\u8bbf\u95ee\u8bb0\u5f55")).expandX();
-            WLabel wLabel = (WLabel)wSection.add((WWidget)guiTheme.label("\u5df2\u8bbf\u95ee\u8239\u53ea\uff1a" + ElytraFinderStatus22.visitedCount(object))).expandX().widget();
-            WLabel wLabel2 = (WLabel)wSection.add((WWidget)guiTheme.label("\u672c\u6b21\u5931\u8d25\u9ed1\u540d\u5355\uff1a" + ElytraFinderStatus22.blacklistCount(object))).expandX().widget();
-            WButton wButton = (WButton)wSection.add((WWidget)guiTheme.button("\u6e05\u7a7a\u5df2\u8bbf\u95ee\u8bb0\u5f55")).expandX().widget();
+            wSection.add((WWidget)guiTheme.horizontalSeparator("黑名单 / 已访问记录")).expandX();
+            WLabel wLabel = (WLabel)wSection.add((WWidget)guiTheme.label("已访问船只：" + ElytraFinderStatus22.visitedCount(object))).expandX().widget();
+            WLabel wLabel2 = (WLabel)wSection.add((WWidget)guiTheme.label("本次失败黑名单：" + ElytraFinderStatus22.blacklistCount(object))).expandX().widget();
+            WButton wButton = (WButton)wSection.add((WWidget)guiTheme.button("清空已访问记录")).expandX().widget();
             wButton.action = () -> {
                 ElytraVisitedUi22.clearVisited(object);
-                wLabel.set("\u5df2\u8bbf\u95ee\u8239\u53ea\uff1a" + ElytraFinderStatus22.visitedCount(object));
+                wLabel.set("已访问船只：" + ElytraFinderStatus22.visitedCount(object));
             };
-            WButton wButton2 = (WButton)wSection.add((WWidget)guiTheme.button("\u6e05\u7a7a\u672c\u6b21\u5931\u8d25\u9ed1\u540d\u5355")).expandX().widget();
+            WButton wButton2 = (WButton)wSection.add((WWidget)guiTheme.button("清空本次失败黑名单")).expandX().widget();
             wButton2.action = () -> {
                 ElytraVisitedUi22.clearSession(object);
-                wLabel2.set("\u672c\u6b21\u5931\u8d25\u9ed1\u540d\u5355\uff1a" + ElytraFinderStatus22.blacklistCount(object));
+                wLabel2.set("本次失败黑名单：" + ElytraFinderStatus22.blacklistCount(object));
             };
         }
         catch (Throwable throwable) {
-            System.out.println("[Elytra Finder] \u8bb0\u5f55\u7ba1\u7406\u754c\u9762\u52a0\u8f7d\u5931\u8d25: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
+            System.out.println("[Elytra Finder] 记录管理界面加载失败: " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage());
         }
     }
 
@@ -47,10 +47,10 @@ public final class ElytraVisitedUi22 {
             Object object2 = ElytraVisitedUi22.getField(object, "o");
             Method method = ElytraVisitedUi22.findCompatibleMethod(object2.getClass(), "set", new ArrayList());
             method.invoke(object2, new ArrayList());
-            System.out.println("[Elytra Finder] \u5df2\u6e05\u7a7a\u6301\u4e45\u5316\u5df2\u8bbf\u95ee\u8239\u53ea\u8bb0\u5f55\u3002");
+            System.out.println("[Elytra Finder] 已清空持久化已访问船只记录。");
         }
         catch (Throwable throwable) {
-            System.out.println("[Elytra Finder] \u6e05\u7a7a\u5df2\u8bbf\u95ee\u8bb0\u5f55\u5931\u8d25: " + throwable.getMessage());
+            System.out.println("[Elytra Finder] 清空已访问记录失败: " + throwable.getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ public final class ElytraVisitedUi22 {
                 Set set = (Set)object2;
                 set.clear();
             }
-            System.out.println("[Elytra Finder] \u5df2\u6e05\u7a7a\u672c\u6b21\u4f1a\u8bdd\u5931\u8d25\u9ed1\u540d\u5355\u3002");
+            System.out.println("[Elytra Finder] 已清空本次会话失败黑名单。");
         }
         catch (Throwable throwable) {
-            System.out.println("[Elytra Finder] \u6e05\u7a7a\u672c\u6b21\u5931\u8d25\u9ed1\u540d\u5355\u5931\u8d25: " + throwable.getMessage());
+            System.out.println("[Elytra Finder] 清空本次失败黑名单失败: " + throwable.getMessage());
         }
     }
 

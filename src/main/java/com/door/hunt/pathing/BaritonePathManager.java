@@ -35,7 +35,7 @@ implements IPathManager {
     public BaritonePathManager() throws ReflectiveOperationException {
         Class<?> pathingBehavior;
         if (!BaritonePathManager.isAvailable()) {
-            throw new IllegalStateException("Baritone API \u4e0d\u53ef\u7528");
+            throw new IllegalStateException("Baritone API 不可用");
         }
         Class<?> api = Class.forName("baritone.api.BaritoneAPI");
         Object provider = api.getMethod("getProvider", new Class[0]).invoke(null, new Object[0]);
