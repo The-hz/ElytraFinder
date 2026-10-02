@@ -1,0 +1,8 @@
+Test32 ship-search recovery
+- Based directly on Test31.
+- Does not change ElytraCollectorModule, HUD, collection state machine, or RocketSafetyLogout.
+- Replaces only ElytraSearchFallback.
+- If normal search returns zero, rescans the requested range and then expands by new structure-region rings.
+- Maximum fallback reach: 50,000 blocks.
+- Stops expansion on the first ring that produces usable, non-visited ship targets.
+- Intended to handle very large SMALL_END_ISLANDS regions where 5k-10k contains no valid End City biome.

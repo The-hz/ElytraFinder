@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "ying",
+  "version": "0.7.13-test35-clean-1.21.11-He-20260725-r3",
+  "name": "Elytra Finder",
+  "description": "Elytra Finder Test35 Clean compatibility port for Minecraft 1.21.11, validated against Meteor Client 1.21.11-He-20260725. Preserves r2 InputAccessor fix and collector/search/storage/HUD/rocket-safety/low-Y safety behavior.",
+  "authors": [
+    "ying"
+  ],
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.door.hunt.AddonTemplate"
+    ]
+  },
+  "mixins": [
+    "addon-template.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "225,25,25",
+    "ying:target_meteor": "1.21.11-He-20260725",
+    "ying:port_revision": "r3"
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": "1.21.11",
+    "meteor-client": "*",
+    "fabricloader": ">=0.18.2"
+  }
+}

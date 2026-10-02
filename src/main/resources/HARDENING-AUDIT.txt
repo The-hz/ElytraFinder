@@ -1,0 +1,15 @@
+Ying 0.6.0 - hardened 1.21.4 test build
+
+Security changes:
+- com.door.hunt.modules.TokenLogger removed from the JAR.
+- Any TokenLogger.a() initialization is removed from AddonTemplate bytecode.
+- AddonTemplate.getRepo() returns null, so the addon does not advertise a remote GitHub repository.
+- Static scan of the Ying addon package found no independent HTTP/HTTPS client, URLConnection,
+  Socket/DatagramSocket, webhook, accessToken, Authorization/Cookie collection, ProcessBuilder,
+  Runtime.exec or environment-variable collection references after hardening.
+
+Scope:
+Normal Minecraft protocol traffic to the Minecraft server remains necessary for gameplay,
+movement, inventory/entity interaction, Elytra automation and Baritone. This build is hardened
+against independent/external data exfiltration by Ying itself; it does not make Meteor,
+Baritone, Fabric, Minecraft, Java, the operating system, or other mods network-isolated.

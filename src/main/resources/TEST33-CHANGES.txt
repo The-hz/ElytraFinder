@@ -1,0 +1,9 @@
+Elytra Finder Test33
+- Base: Test32.
+- Fix: FILL_BOX no longer stops immediately when the expected shulker-box screen has not synchronized.
+- Waits 15 ticks (~0.75 s) before recovery.
+- Reuses the addon's existing CLOSE_SCREEN -> OPEN_BOX state flow.
+- Retries up to 3 times.
+- A valid container screen clears retry history.
+- After 3 failed recoveries, the original safe-stop behavior is used.
+- Search, flight, collection, HUD, visited ships, adaptive ship search, and rocket safety evacuation are otherwise unchanged.

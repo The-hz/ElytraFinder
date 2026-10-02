@@ -1,0 +1,8 @@
+Test34 storage return safety
+- Records the formal ship landing point when storage starts from EXIT_LANDING.
+- Otherwise records the player's storage-start position.
+- After shulker/end-chest cleanup, blocks normal flight state and uses Baritone to return within 2.5 blocks.
+- Only after arrival does RISING resume.
+- Repaths every 20 ticks if needed.
+- 30 second timeout fails closed and stops the task instead of taking off from the wrong position.
+- Test33 shulker-screen retry remains intact.

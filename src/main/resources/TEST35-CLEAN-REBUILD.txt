@@ -1,0 +1,18 @@
+Elytra Finder 1.21.4 Test35 Clean Rebuild
+
+Purpose
+- Preserve the existing single low-Y check inside ElytraCollectorModule.
+- LowYSafetyLogout remains an action helper only; it does not subscribe to ticks or perform a second height monitor.
+- Regenerate JVM StackMap frames for ElytraCollectorModule from the original Test35 bytecode instead of hand-patching individual frame offsets.
+
+Low-Y behavior
+- Setting: 低 Y 退出 (toggle)
+- Setting: 低 Y 阈值 (default 30, range 0-100)
+- Only when collector state is not IDLE/DONE and current Y < threshold.
+- Stops collector/pathing, disables active KillAura, and disconnects.
+- LowYSafetyLogout has a 3-second duplicate-trigger guard.
+
+Bytecode rebuild
+- All 17,201 disassembled instructions were compared against the original Test35.
+- Only 3 instructions in unreachable dead-code tails were normalized from NOP to ATHROW by ASM frame computation.
+- No reachable collector/search/storage instruction was intentionally changed.

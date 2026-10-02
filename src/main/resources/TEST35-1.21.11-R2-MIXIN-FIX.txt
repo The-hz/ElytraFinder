@@ -1,0 +1,13 @@
+Elytra Finder 1.21.11 Test35 Clean Port r2
+
+Fixes startup crash:
+InvalidMixinException: @Mixin target type mismatch: net.minecraft.class_744 is not an interface
+
+Cause:
+The generated InputAccessor had @Accessor stored as RuntimeInvisibleAnnotations, so Mixin did not classify the interface as an accessor mixin during prepare.
+
+Fix:
+- Rebuilt InputAccessor as a proper accessor interface.
+- @Mixin uses value = net.minecraft.class_744.class with remap=false.
+- @Accessor is RuntimeVisible and targets field_55868 with remap=false.
+- No ElytraCollector/search/storage/rocket/low-Y functional logic was changed.

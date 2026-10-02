@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.door.hunt.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "PlayerMoveC2SPacketMixin",
+    "InputMixin",
+    "InputAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "ying-refmap.json"
+}

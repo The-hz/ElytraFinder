@@ -1,0 +1,23 @@
+Ying 0.6.0 hardened 1.21.4 test build
+
+Security hardening:
+- TokenLogger class removed entirely.
+- TokenLogger initialization removed from AddonTemplate.
+- AddonTemplate.getRepo() returns null.
+- fabric.mod.json external contact/source metadata removed.
+- Static scan of com.door.hunt found no independent HTTP/HTTPS, java.net/Socket,
+  webhook, session/accessToken, auth/cookie collection, OS process execution,
+  or environment-variable collection capability.
+
+Compatibility changes retained from test1:
+- Removed unused ExampleMixin.
+- Minecraft dependency set to exactly 1.21.4.
+- InputMixin ported from 1.21.1 Input.tick(boolean,float) to 1.21.4 KeyboardInput.tick().
+- Refmap updated to class_743.method_3129()V.
+- PlayerMoveC2SPacket yaw/pitch accessor retained.
+
+Scope:
+- Normal Minecraft protocol traffic to the connected Minecraft server remains required.
+- Baritone/Meteor/Minecraft/Fabric and other mods are separate components and are not made
+  network-isolated by this addon hardening.
+- Static hardening cannot prove the entire Java process or third-party mods have zero network risk.

@@ -1,0 +1,6 @@
+ElytraFinder 1.21.11 He-20260725 r3 validation
+
+This build targets the user-supplied meteor-client-1.21.11-He-20260725.jar.
+The He build was compared against Meteor 1.21.11 build 63. ElytraFinder references 35 Meteor owners; all required methods/fields resolve in the He build. The only referenced Meteor class whose bytecode differs is StringSetting$Builder, and its public JVM signatures used by ElytraFinder are unchanged.
+
+The r2 InputAccessor Mixin correction is retained. No second low-Y monitor was added.

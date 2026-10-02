@@ -1,0 +1,18 @@
+ElytraFinder Test35 Clean - Minecraft 1.21.11 / Meteor He-20260725 compatibility port (r3).
+
+Target runtime:
+- Minecraft: 1.21.11
+- Java: 21+
+- Fabric Loader: 0.18.2+
+- Meteor Client: 1.21.11-He-20260725
+
+Compatibility basis:
+- Reuses the r2 1.21.11 bytecode adaptation.
+- Keeps the corrected InputAccessor Mixin metadata.
+- PlayerInput / movementVector handling remains the 1.21.11 path.
+- PlayerInventory main access uses getMainStacks().
+- Chest-slot Elytra checks use getEquippedStack(CHEST).
+- Entity position, stopGliding, MathHelper sin/cos and packet constructors remain adapted for Minecraft 1.21.11.
+- Symbol-level validation against Meteor 1.21.11-He-20260725 found no missing Meteor methods or fields (Orbit checked from its nested jar).
+
+No gameplay feature was removed or rewritten for r3. Collector/search/storage/HUD/rocket-safety/low-Y safety behavior is retained from Test35 Clean r2.
