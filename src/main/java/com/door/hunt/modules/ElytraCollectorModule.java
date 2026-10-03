@@ -122,29 +122,29 @@ import net.minecraft.world.gen.densityfunction.DensityFunction;
  */
 public class ElytraCollectorModule
 extends Module {
-    private static final MCVersion a = MCVersion.v1_16_2;
-    private volatile SimplexNoiseSampler b;
-    private volatile InterpolatedNoiseSampler c;
-    private final SettingGroup d;
-    private final SettingGroup e;
-    private final Setting<String> f;
-    private final Setting<Integer> g;
-    private final Setting<Integer> h;
-    private final Setting<Integer> i;
-    private final Setting<Integer> j;
-    private final Setting<Double> k;
-    private final Setting<Double> l;
-    private final Setting<Double> m;
-    private final Setting<Double> n;
-    private final Setting<List<String>> o;
-    private final Setting<List<String>> p;
-    private final Setting<Boolean> q;
-    private final Setting<Boolean> r;
-    private final SettingGroup s;
-    private final Setting<Integer> t;
-    private final Setting<List<String>> u;
-    private final Setting<Boolean> v;
-    private final Setting<Integer> w;
+    private static final MCVersion version = MCVersion.v1_16_2;
+    private volatile SimplexNoiseSampler simplexNoise;
+    private volatile InterpolatedNoiseSampler interpolatedNoise;
+    private final SettingGroup sgGeneral;
+    private final SettingGroup sgFlight;
+    private final Setting<String> seed;
+    private final Setting<Integer> searchRange;
+    private final Setting<Integer> minHigh;
+    private final Setting<Integer> maxHigh;
+    private final Setting<Integer> pullupHigh;
+    private final Setting<Double> pitchRotationSpeed;
+    private final Setting<Double> yawRotationSpeed;
+    private final Setting<Double> killauraAttackRange;
+    private final Setting<Double> fireworkRocketDelay;
+    private final Setting<List<String>> acccessedList;
+    private final Setting<List<String>> result;
+    private final Setting<Boolean> isStart;
+    private final Setting<Boolean> debug;
+    private final SettingGroup sgStorage;
+    private final Setting<Integer> keepCleanSlot;
+    private final Setting<List<String>> supplies;
+    private final Setting<Boolean> autoDisconnect;
+    private final Setting<Integer> autoDisconnectY;
     private State x;
     private CollectStep y;
     private final List<ShipTarget> z;
@@ -243,30 +243,30 @@ extends Module {
 
     public ElytraCollectorModule() {
         super(AddonTemplate.CATEGORY, "鞘翅收集器", (String)"全自动找末地城鞘翅：种子定位 + 龙头精确定位 + 高度保持飞行 + 缓降 + Baritone 寻路 + 打展示框捡鞘翅.");
-        this.d = this.settings.getDefaultGroup();
-        this.e = this.settings.createGroup((String)"Flight");
-        this.f = this.d.add((Setting)((StringSetting.Builder)((StringSetting.Builder)((StringSetting.Builder)new StringSetting.Builder().name("种子")).description((String)"世界种子 (0 = 当前世界).")).defaultValue("-7346913998703726680")).build());
-        this.g = this.d.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("搜索范围")).description((String)"搜索半径，单位方块 (从玩家位置).")).defaultValue(5000)).range(320, 100000).sliderRange(320, 20000).build());
-        this.h = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最低高度")).description((String)"飞行中低于此高度时触发爬升.")).defaultValue(180)).range(100, 300).sliderRange(120, 260).build());
-        this.i = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最高高度")).description((String)"飞行中高于此高度时停止爬升、转为平缓下滑 (与 min-height 组成滞回区间).")).defaultValue(220)).range(120, 320).sliderRange(140, 300).build());
-        this.j = this.e.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("拉升高度")).description((String)"起飞后抬头爬升到的目标高度 (需高于 max-height).")).defaultValue(230)).range(200, 320).sliderRange(200, 300).build());
-        this.k = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("俯仰速度")).description((String)"飞行 (pitch40) 时上下转动视角 (pitch) 的速度 (度/tick).")).defaultValue(10.0).min(1.0).sliderMax(45.0).build());
-        this.l = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("偏航速度")).description((String)"左右转动视角 (yaw) 及鞘翅缓降的转向速度 (度/tick).")).defaultValue(30.0).min(1.0).sliderMax(90.0).build());
-        this.m = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("Kill Aura 攻击距离")).description((String)"攻击展示框 (item_frame) 的判定距离.")).defaultValue(3.0).min(1.0).sliderMax(6.0).build());
-        this.n = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"展开鞘翅后立即使用第一个烟花，之后每隔这么多秒再用一个 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
-        this.o = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("已访问末地船")).description((String)"黑名单：已经去过的船 (x,z)，搜索时会自动跳过. 自动维护.")).defaultValue(new ArrayList())).visible(() -> false)).build());
-        this.p = this.d.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("搜索结果")).description((String)"上次搜索结果列表 (x,y,z,朝向)，下一次搜索完成后覆盖.")).defaultValue(new ArrayList())).build());
-        this.q = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("开始")).description((String)"开始自动采集.")).defaultValue(false)).onChanged(b -> {
+        this.sgGeneral = this.settings.getDefaultGroup();
+        this.sgFlight = this.settings.createGroup((String)"Flight");
+        this.seed = this.sgGeneral.add((Setting)((StringSetting.Builder)((StringSetting.Builder)((StringSetting.Builder)new StringSetting.Builder().name("种子")).description((String)"世界种子 (0 = 当前世界).")).defaultValue("-7346913998703726680")).build());
+        this.searchRange = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("搜索范围")).description((String)"搜索半径，单位方块 (从玩家位置).")).defaultValue(5000)).range(320, 100000).sliderRange(320, 20000).build());
+        this.minHigh = this.sgFlight.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最低高度")).description((String)"飞行中低于此高度时触发爬升.")).defaultValue(180)).range(100, 300).sliderRange(120, 260).build());
+        this.maxHigh = this.sgFlight.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("最高高度")).description((String)"飞行中高于此高度时停止爬升、转为平缓下滑 (与 min-height 组成滞回区间).")).defaultValue(220)).range(120, 320).sliderRange(140, 300).build());
+        this.pullupHigh = this.sgFlight.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("拉升高度")).description((String)"起飞后抬头爬升到的目标高度 (需高于 max-height).")).defaultValue(230)).range(200, 320).sliderRange(200, 300).build());
+        this.pitchRotationSpeed = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("俯仰速度")).description((String)"飞行 (pitch40) 时上下转动视角 (pitch) 的速度 (度/tick).")).defaultValue(10.0).min(1.0).sliderMax(45.0).build());
+        this.yawRotationSpeed = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("偏航速度")).description((String)"左右转动视角 (yaw) 及鞘翅缓降的转向速度 (度/tick).")).defaultValue(30.0).min(1.0).sliderMax(90.0).build());
+        this.killauraAttackRange = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("Kill Aura 攻击距离")).description((String)"攻击展示框 (item_frame) 的判定距离.")).defaultValue(3.0).min(1.0).sliderMax(6.0).build());
+        this.fireworkRocketDelay = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"展开鞘翅后立即使用第一个烟花，之后每隔这么多秒再用一个 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
+        this.acccessedList = this.sgGeneral.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("已访问末地船")).description((String)"黑名单：已经去过的船 (x,z)，搜索时会自动跳过. 自动维护.")).defaultValue(new ArrayList())).visible(() -> false)).build());
+        this.result = this.sgGeneral.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("搜索结果")).description((String)"上次搜索结果列表 (x,y,z,朝向)，下一次搜索完成后覆盖.")).defaultValue(new ArrayList())).build());
+        this.isStart = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("开始")).description((String)"开始自动采集.")).defaultValue(false)).onChanged(b -> {
             if (b.booleanValue()) {
                 this.c();
             }
         })).build());
-        this.r = this.d.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("调试")).description((String)"输出调试日志 (用于校准高度公式).")).defaultValue(false)).build());
-        this.s = this.settings.createGroup((String)"Storage");
-        this.t = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("清仓保留空槽")).description((String)"背包可用空格 ≤ 此值时，拿到鞘翅后自动去末影箱存鞘翅.")).defaultValue(3)).range(0, 36).sliderRange(0, 36).build());
-        this.u = this.s.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("补给品")).description((String)"物资列表，格式: 物品ID;最低值;目标库存 (如 minecraft:firework_rocket;32;256). 背包物资低于最低值时自动从末影箱补货，拿到目标库存为止.")).defaultValue(new ArrayList<String>(List.of((String)"minecraft:firework_rocket;4;16", (String)"minecraft:cooked_beef;8;32")))).build());
-        this.v = this.s.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("低 Y 退出")).description((String)"Y 低于阈值时自动退出游戏 (防虚空掉物).")).defaultValue(true)).build());
-        this.w = this.s.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("低 Y 阈值")).description((String)"低于此 Y 自动退出游戏.")).defaultValue(30)).range(0, 100).sliderRange(0, 100).build());
+        this.debug = this.sgGeneral.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("调试")).description((String)"输出调试日志 (用于校准高度公式).")).defaultValue(false)).build());
+        this.sgStorage = this.settings.createGroup((String)"Storage");
+        this.keepCleanSlot = this.sgStorage.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("清仓保留空槽")).description((String)"背包可用空格 ≤ 此值时，拿到鞘翅后自动去末影箱存鞘翅.")).defaultValue(3)).range(0, 36).sliderRange(0, 36).build());
+        this.supplies = this.sgStorage.add((Setting)((StringListSetting.Builder)((StringListSetting.Builder)((StringListSetting.Builder)new StringListSetting.Builder().name("补给品")).description((String)"物资列表，格式: 物品ID;最低值;目标库存 (如 minecraft:firework_rocket;32;256). 背包物资低于最低值时自动从末影箱补货，拿到目标库存为止.")).defaultValue(new ArrayList<String>(List.of((String)"minecraft:firework_rocket;4;16", (String)"minecraft:cooked_beef;8;32")))).build());
+        this.autoDisconnect = this.sgStorage.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("低 Y 退出")).description((String)"Y 低于阈值时自动退出游戏 (防虚空掉物).")).defaultValue(true)).build());
+        this.autoDisconnectY = this.sgStorage.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("低 Y 阈值")).description((String)"低于此 Y 自动退出游戏.")).defaultValue(30)).range(0, 100).sliderRange(0, 100).build());
         this.x = State.IDLE;
         this.y = CollectStep.TO_P1;
         this.z = Collections.synchronizedList(new ArrayList());
@@ -341,9 +341,9 @@ extends Module {
         this.cv = false;
         this.cw = false;
         this.cx = new Object();
-        this.startClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("起飞拉升角度")).description("首次起飞以及滑翔降到最低高度后的重新爬升角度（度）。达到最高高度后自动切换滑翔。")).defaultValue(45.0).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
-        this.cruiseClimbAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航爬升角度")).description("长距离巡航到最低高度后使用的抬头角度（度）。")).defaultValue(54.77).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
-        this.cruiseGlideAngle = this.e.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航滑翔角度")).description("达到最高高度后使用的向下滑翔角度（度）。滑翔阶段不使用烟花，降到最低高度后重新爬升。")).defaultValue(37.72).range(0.0, 70.0).sliderRange(0.0, 70.0).build());
+        this.startClimbAngle = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("起飞拉升角度")).description("首次起飞以及滑翔降到最低高度后的重新爬升角度（度）。达到最高高度后自动切换滑翔。")).defaultValue(45.0).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
+        this.cruiseClimbAngle = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航爬升角度")).description("长距离巡航到最低高度后使用的抬头角度（度）。")).defaultValue(54.77).range(5.0, 80.0).sliderRange(5.0, 80.0).build());
+        this.cruiseGlideAngle = this.sgFlight.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("巡航滑翔角度")).description("达到最高高度后使用的向下滑翔角度（度）。滑翔阶段不使用烟花，降到最低高度后重新爬升。")).defaultValue(37.72).range(0.0, 70.0).sliderRange(0.0, 70.0).build());
         this.t18DirectionGroup = this.settings.createGroup("搜索方向");
         this.t18North = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索北方")).description("允许搜索以开始搜索时的位置为中心，北方（-Z）扇区内的末地船。")).defaultValue(true)).build());
         this.t18South = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索南方")).description("允许搜索以开始搜索时的位置为中心，南方（+Z）扇区内的末地船。")).defaultValue(true)).build());
@@ -351,8 +351,8 @@ extends Module {
         this.t18West = this.t18DirectionGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("搜索西方")).description("允许搜索以开始搜索时的位置为中心，西方（-X）扇区内的末地船。")).defaultValue(true)).build());
         this.t19VisitedGroup = this.settings.createGroup("访问记录");
         this.t19IgnoreVisited = this.t19VisitedGroup.add((Setting)((BoolSetting.Builder)((BoolSetting.Builder)((BoolSetting.Builder)new BoolSetting.Builder().name("忽略已访问记录")).description("开启后重新扫描所有预测末地船，不使用旧的“已访问船”列表。适合旧版本记录异常时临时恢复搜索。")).defaultValue(false)).build());
-        ElytraFlightUi20.remove(this.d, this.j);
-        ElytraFlightUi20.remove(this.e, this.cruiseClimbAngle);
+        ElytraFlightUi20.remove(this.sgGeneral, this.pullupHigh);
+        ElytraFlightUi20.remove(this.sgFlight, this.cruiseClimbAngle);
         ElytraFinderStatusHud.attach((Object)this);
     }
 
@@ -360,9 +360,9 @@ extends Module {
         WSection section = theme.section((String)"黑名单", true);
         WButton clear = (WButton)section.add((WWidget)theme.button((String)"清除黑名单")).expandX().widget();
         clear.action = () -> {
-            List list = (List)this.o.get();
+            List list = (List)this.acccessedList.get();
             synchronized (list) {
-                ((List)this.o.get()).clear();
+                ((List)this.acccessedList.get()).clear();
             }
             this.info((String)"黑名单已清空.", new Object[0]);
         };
@@ -415,7 +415,7 @@ extends Module {
 
     private void c() {
         if (this.x != State.IDLE && this.x != State.DONE) {
-            this.q.set(false);
+            this.isStart.set(false);
             return;
         }
         this.x = State.SEARCHING;
@@ -427,8 +427,8 @@ extends Module {
         this.bf = StoragePhase.NONE;
         this.bg = 0;
         this.bl = -1;
-        this.info("开始搜索末地城 (范围=" + String.valueOf(this.g.get()) + " 方块)...", new Object[0]);
-        if (((Boolean)this.r.get()).booleanValue()) {
+        this.info("开始搜索末地城 (范围=" + String.valueOf(this.searchRange.get()) + " 方块)...", new Object[0]);
+        if (((Boolean)this.debug.get()).booleanValue()) {
             this.info("调试日志文件: " + String.valueOf(this.cl().toAbsolutePath()), new Object[0]);
         }
         this.d();
@@ -452,18 +452,18 @@ extends Module {
                 if (this.ac || generation != this.ad) {
                     return;
                 }
-                this.ai = this.dn((String)this.f.get());
-                EndCity endCity = new EndCity(a);
-                EndCityGenerator generator = new EndCityGenerator(a);
+                this.ai = this.dn((String)this.seed.get());
+                EndCity endCity = new EndCity(version);
+                EndCityGenerator generator = new EndCityGenerator(version);
                 ChunkRand rand = new ChunkRand();
-                EndBiomeSource biomeSource = new EndBiomeSource(a, this.ai);
-                this.b = ElytraCollectorModule.a(this.ai);
-                this.c = new InterpolatedNoiseSampler((Random)new CheckedRandom(this.ai), 0.25, 0.25, 80.0, 160.0, 4.0);
+                EndBiomeSource biomeSource = new EndBiomeSource(version, this.ai);
+                this.simplexNoise = ElytraCollectorModule.a(this.ai);
+                this.interpolatedNoise = new InterpolatedNoiseSampler((Random)new CheckedRandom(this.ai), 0.25, 0.25, 80.0, 160.0, 4.0);
                 EndTerrainGenerator terrainGen = new EndTerrainGenerator(biomeSource);
                 int px = (int)Math.floor(this.mc.player.getX());
                 int pz = (int)Math.floor(this.mc.player.getZ());
                 int spacing = endCity.getSpacing();
-                int range = (Integer)this.g.get() + this.aq * 500;
+                int range = (Integer)this.searchRange.get() + this.aq * 500;
                 int regionRange = range / (spacing * 16) + 1;
                 int prx = Math.floorDiv(px >> 4, spacing);
                 int prz = Math.floorDiv(pz >> 4, spacing);
@@ -482,7 +482,7 @@ extends Module {
                         boolean hasShip = generator.hasShip();
                         if (hasShip && (t = this.f(generator, city)) != null && !this.co(t.d) && !this.ap.contains(this.cn(t.d))) {
                             found.add(t);
-                            if (((Boolean)this.r.get()).booleanValue()) {
+                            if (((Boolean)this.debug.get()).booleanValue()) {
                                 this.cm("ship city=(" + city.getX() + "," + city.getZ() + ") head=(" + t.d.getX() + "," + t.d.getY() + "," + t.d.getZ() + ") facing=" + String.valueOf(t.b) + " E=" + String.format((String)"%.4f", this.ce(city.getX() * 16 + 8, city.getZ() * 16 + 8)));
                             }
                         }
@@ -498,11 +498,11 @@ extends Module {
                 this.z.clear();
                 this.z.addAll(found);
                 this.aa = 0;
-                List list = (List)this.p.get();
+                List list = (List)this.result.get();
                 synchronized (list) {
-                    ((List)this.p.get()).clear();
+                    ((List)this.result.get()).clear();
                     for (ShipTarget t : found) {
-                        ((List)this.p.get()).add(t.d.getX() + "," + t.d.getY() + "," + t.d.getZ() + "," + String.valueOf(t.b));
+                        ((List)this.result.get()).add(t.d.getX() + "," + t.d.getY() + "," + t.d.getZ() + "," + String.valueOf(t.b));
                     }
                 }
                 this.info("找到 " + this.z.size() + " 艘带船末地城 (已排除黑名单, 范围=" + range + ").", new Object[0]);
@@ -528,7 +528,7 @@ extends Module {
                 if (this.ac || generation != this.ad) break block18;
                 this.error("搜索失败: " + e.getMessage(), new Object[0]);
                 this.x = State.IDLE;
-                this.q.set(false);
+                this.isStart.set(false);
             }
         }
     }
@@ -596,8 +596,8 @@ extends Module {
                 return;
             }
             ++this.ag;
-            if (this.x != State.IDLE && this.x != State.DONE && ((Boolean)this.v.get()).booleanValue() && this.mc.player.getY() < (double)((Integer)this.w.get()).intValue()) {
-                this.warning("Y=" + String.format((String)"%.1f", this.mc.player.getY()) + " 低于阈值 " + String.valueOf(this.w.get()) + "，任务已停止.", new Object[0]);
+            if (this.x != State.IDLE && this.x != State.DONE && ((Boolean)this.autoDisconnect.get()).booleanValue() && this.mc.player.getY() < (double)((Integer)this.autoDisconnectY.get()).intValue()) {
+                this.warning("Y=" + String.format((String)"%.1f", this.mc.player.getY()) + " 低于阈值 " + String.valueOf(this.autoDisconnectY.get()) + "，任务已停止.", new Object[0]);
                 LowYSafetyLogout.trigger((Object)this, (String)"低高度任务停止.");
                 return;
             }
@@ -644,7 +644,7 @@ extends Module {
         if (!this.ba && this.ag > 400) {
             this.error((String)"起飞超时 (可能没穿鞘翅或没有烟花).", new Object[0]);
             this.x = State.IDLE;
-            this.q.set(false);
+            this.isStart.set(false);
             this.cw();
             return;
         }
@@ -681,7 +681,7 @@ extends Module {
             this.cv();
             this.ay = true;
             this.az = this.ag;
-        } else if (!(this.ba && this.cr == 1 || (long)(this.ag - this.az) < Math.max(1L, Math.round((Double)this.n.get() * 20.0)))) {
+        } else if (!(this.ba && this.cr == 1 || (long)(this.ag - this.az) < Math.max(1L, Math.round((Double)this.fireworkRocketDelay.get() * 20.0)))) {
             this.cv();
             this.az = this.ag;
         }
@@ -702,7 +702,7 @@ extends Module {
                 this.x = State.LANDING;
                 this.ag = 0;
             }
-        } else if (this.mc.player.getY() >= (double)((Integer)this.i.get()).intValue()) {
+        } else if (this.mc.player.getY() >= (double)((Integer)this.maxHigh.get()).intValue()) {
             if (this.z.isEmpty()) {
                 this.mc.player.setPitch(-20.0f);
                 this.mc.options.forwardKey.setPressed(true);
@@ -739,7 +739,7 @@ extends Module {
             path = 2;
         } else {
             ++this.am;
-            if (this.am == 1 && ((Boolean)this.r.get()).booleanValue() && !this.cg()) {
+            if (this.am == 1 && ((Boolean)this.debug.get()).booleanValue() && !this.cg()) {
                 this.cm((String)"注意: 地形高度判断不足 (船可能在虚空上)，改由龙头扫描确认.");
             }
             if (this.am % 20 != 0) {
@@ -769,7 +769,7 @@ extends Module {
                         this.af = ShipWaypoints.j(this.al, this.ae.b);
                         this.ak = true;
                         this.info("已确认龙头: " + String.valueOf(this.al) + " 朝向=" + String.valueOf(this.ae.b), new Object[0]);
-                        if (((Boolean)this.r.get()).booleanValue()) {
+                        if (((Boolean)this.debug.get()).booleanValue()) {
                             int realTop = this.mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, this.al.getX(), this.al.getZ());
                             this.cm("head=(" + this.al.getX() + "," + this.al.getY() + "," + this.al.getZ() + ") 龙头下地表=" + realTop + " seedY=" + this.ae.d.getY());
                         }
@@ -834,10 +834,10 @@ extends Module {
         float yaw = this.cy(lp);
         double y = this.mc.player.getY();
         if (this.aj) {
-            if (y >= (double)((Integer)this.i.get()).intValue()) {
+            if (y >= (double)((Integer)this.maxHigh.get()).intValue()) {
                 this.aj = false;
             }
-        } else if (y <= (double)((Integer)this.h.get()).intValue()) {
+        } else if (y <= (double)((Integer)this.minHigh.get()).intValue()) {
             this.aj = true;
         }
         float pitch = this.aj != false ? -((float)((Double)this.startClimbAngle.get()).doubleValue()) : (float)((Double)this.cruiseGlideAngle.get()).doubleValue();
@@ -850,9 +850,9 @@ extends Module {
             this.ag = 0;
             return;
         }
-        if (this.mc.player.getY() < (double)((Integer)this.i.get()).intValue()) {
+        if (this.mc.player.getY() < (double)((Integer)this.maxHigh.get()).intValue()) {
             this.aj = true;
-            if ((long)(this.ag - this.az) < Math.max(1L, Math.round((Double)this.n.get() * 20.0))) return;
+            if ((long)(this.ag - this.az) < Math.max(1L, Math.round((Double)this.fireworkRocketDelay.get() * 20.0))) return;
             this.cv();
             this.az = this.ag;
             return;
@@ -1033,7 +1033,7 @@ extends Module {
                 break;
             }
             case 4: {
-                ItemFrameEntity frame = this.df((Double)this.m.get() + 2.0);
+                ItemFrameEntity frame = this.df((Double)this.killauraAttackRange.get() + 2.0);
                 if (frame != null && this.ag == 1) {
                     boolean bl = this.at = frame.getHeldItemStack().getItem() == Items.ELYTRA;
                     if (!this.at) {
@@ -1137,7 +1137,7 @@ extends Module {
             this.x = State.IDLE;
         }
         PathManagers.get().stop();
-        this.q.set(false);
+        this.isStart.set(false);
     }
 
     private void p(String reason) {
@@ -1152,7 +1152,7 @@ extends Module {
     }
 
     private void r() {
-        this.bo = this.ca() <= (Integer)this.t.get();
+        this.bo = this.ca() <= (Integer)this.keepCleanSlot.get();
         this.bp = this.bs();
         if (this.bo || this.bp) {
             this.info("存储会话: 存鞘翅=" + this.bo + ", 补货=" + this.bp, new Object[0]);
@@ -1245,7 +1245,7 @@ extends Module {
                     break;
                 }
                 case 8: {
-                    if (this.ca() <= (Integer)this.t.get() && this.bv() > 0) {
+                    if (this.ca() <= (Integer)this.keepCleanSlot.get() && this.bv() > 0) {
                         this.cu = true;
                         this.cv = true;
                         this.bo = true;
@@ -2280,7 +2280,7 @@ extends Module {
 
     private List<SupplyRule> br() {
         ArrayList<SupplyRule> out = new ArrayList<SupplyRule>();
-        for (String entry : (List<String>)this.u.get()) {
+        for (String entry : (List<String>)this.supplies.get()) {
             String[] p = entry.split((String)";");
             if (p.length < 3) {
                 this.warning("物资配置格式错误: " + entry, new Object[0]);
@@ -2399,7 +2399,7 @@ extends Module {
             for (int rz = -12; rz <= 12; ++rz) {
                 long k1 = i + rx;
                 long l1 = j + rz;
-                if (this.b == null || k1 * k1 + l1 * l1 <= 4096L || !(this.b.sample2D(k1, l1) < (double)-0.9f)) continue;
+                if (this.simplexNoise == null || k1 * k1 + l1 * l1 <= 4096L || !(this.simplexNoise.sample2D(k1, l1) < (double)-0.9f)) continue;
                 float f1 = (Math.abs((float)k1) * 3439.0f + Math.abs((float)l1) * 147.0f) % 13.0f + 9.0f;
                 float f2 = k - rx * 2;
                 float f3 = l - rz * 2;
@@ -2464,7 +2464,7 @@ extends Module {
         int h3 = this.mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, cols[2][0], cols[2][1]);
         int h4 = this.mc.world.getTopY(Heightmap.Type.WORLD_SURFACE, cols[3][0], cols[3][1]);
         int min = Math.min(Math.min(h1, h2), Math.min(h3, h4));
-        if (((Boolean)this.r.get()).booleanValue()) {
+        if (((Boolean)this.debug.get()).booleanValue()) {
             this.cm("city=(" + chunkX + "," + chunkZ + ") rotation=" + String.valueOf((Object)rotation) + " min=" + min);
             this.ch(posX, posZ, h1);
             this.ch(posX, posZ + zOff, h2);
@@ -2482,7 +2482,7 @@ extends Module {
     }
 
     private int ci(int x, int z) {
-        if (this.c == null) {
+        if (this.interpolatedNoise == null) {
             return 0;
         }
         int x0 = Math.floorDiv(x, 4) * 4;
@@ -2493,16 +2493,16 @@ extends Module {
         double e10 = ((double)this.cc((x0 + 4) / 8, z0 / 8) - 8.0) / 128.0;
         double e01 = ((double)this.cc(x0 / 8, (z0 + 4) / 8) - 8.0) / 128.0;
         double e11 = ((double)this.cc((x0 + 4) / 8, (z0 + 4) / 8) - 8.0) / 128.0;
-        double n00 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, 256, z0));
-        double n10 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, 256, z0));
-        double n01 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, 256, z0 + 4));
-        double n11 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, 256, z0 + 4));
+        double n00 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, 256, z0));
+        double n10 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, 256, z0));
+        double n01 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, 256, z0 + 4));
+        double n11 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, 256, z0 + 4));
         for (int cell = 63; cell >= 0; --cell) {
             int yb = cell * 4;
-            double b00 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, yb, z0));
-            double b10 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, yb, z0));
-            double b01 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, yb, z0 + 4));
-            double b11 = this.c.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, yb, z0 + 4));
+            double b00 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, yb, z0));
+            double b10 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, yb, z0));
+            double b01 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0, yb, z0 + 4));
+            double b11 = this.interpolatedNoise.sample((DensityFunction.NoisePos)new DensityFunction.UnblendedNoisePos(x0 + 4, yb, z0 + 4));
             double c000 = ElytraCollectorModule.cj(e00 + b00, yb);
             double c010 = ElytraCollectorModule.cj(e00 + n00, yb + 4);
             double c100 = ElytraCollectorModule.cj(e10 + b10, yb);
@@ -2564,7 +2564,7 @@ extends Module {
         min = Math.min(min, this.ci(posX, posZ + zOff));
         min = Math.min(min, this.ci(posX + xOff, posZ));
         min = Math.min(min, this.ci(posX + xOff, posZ + zOff));
-        if (((Boolean)this.r.get()).booleanValue()) {
+        if (((Boolean)this.debug.get()).booleanValue()) {
             this.cm("city=(" + chunkX + "," + chunkZ + ") rotation=" + String.valueOf((Object)rotation) + " predMin=" + min);
         }
         return min >= 60;
@@ -2578,7 +2578,7 @@ extends Module {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     private void cm(String msg) {
-        if (!((Boolean)this.r.get()).booleanValue()) {
+        if (!((Boolean)this.debug.get()).booleanValue()) {
             return;
         }
         try {
@@ -2605,22 +2605,22 @@ extends Module {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     private void cp(BlockPos head) {
-        List list = (List)this.o.get();
+        List list = (List)this.acccessedList.get();
         synchronized (list) {
             String key = this.cn(head);
-            if (!((List)this.o.get()).contains(key)) {
-                ((List)this.o.get()).add(key);
+            if (!((List)this.acccessedList.get()).contains(key)) {
+                ((List)this.acccessedList.get()).add(key);
             }
         }
     }
 
     private void cq() {
-        ItemFrameEntity frame = this.df((Double)this.m.get());
+        ItemFrameEntity frame = this.df((Double)this.killauraAttackRange.get());
         if (frame == null) {
             if (this.af != null) {
                 this.cx(this.af.b);
             }
-            frame = this.df((Double)this.m.get() + 2.0);
+            frame = this.df((Double)this.killauraAttackRange.get() + 2.0);
         }
         if (frame != null) {
             this.mc.interactionManager.attackEntity((PlayerEntity)this.mc.player, (Entity)frame);
@@ -2708,12 +2708,12 @@ extends Module {
     }
 
     private void da(float targetYaw, float targetPitch) {
-        this.mc.player.setYaw(ElytraCollectorModule.dc(this.mc.player.getYaw(), targetYaw, ((Double)this.l.get()).floatValue()));
-        this.mc.player.setPitch(ElytraCollectorModule.dc(this.mc.player.getPitch(), targetPitch, ((Double)this.k.get()).floatValue()));
+        this.mc.player.setYaw(ElytraCollectorModule.dc(this.mc.player.getYaw(), targetYaw, ((Double)this.yawRotationSpeed.get()).floatValue()));
+        this.mc.player.setPitch(ElytraCollectorModule.dc(this.mc.player.getPitch(), targetPitch, ((Double)this.pitchRotationSpeed.get()).floatValue()));
     }
 
     private void db(float targetYaw, float targetPitch) {
-        float speed = ((Double)this.l.get()).floatValue();
+        float speed = ((Double)this.yawRotationSpeed.get()).floatValue();
         this.mc.player.setYaw(ElytraCollectorModule.dc(this.mc.player.getYaw(), targetYaw, speed));
         this.mc.player.setPitch(ElytraCollectorModule.dc(this.mc.player.getPitch(), targetPitch, speed));
     }

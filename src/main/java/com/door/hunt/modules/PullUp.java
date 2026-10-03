@@ -32,35 +32,35 @@ import net.minecraft.util.Hand;
 
 public class PullUp
 extends Module {
-    private final SettingGroup a;
-    private final Setting<Integer> b;
-    private final Setting<Integer> c;
-    private final Setting<Double> d;
-    private final Setting<Double> e;
-    private boolean f;
-    private int g;
-    private int h;
+    private final SettingGroup sgGeneral;
+    private final Setting<Integer> dangerY;
+    private final Setting<Integer> targetY;
+    private final Setting<Double> pullupPitch;
+    private final Setting<Double> fireworkRocketDelay;
+    private boolean isInDanger;
+    private int tickPassed;
+    private int tickWait;
 
     public PullUp() {
         super(AddonTemplate.CATEGORY, "紧急拉升", (String)"低于设定 Y 值时无条件强制拉升 (抬头 + 烟花)，升到安全高度自动停止.");
-        this.a = this.settings.getDefaultGroup();
-        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("危险 Y 高度")).description((String)"危险高度：低于此 Y 时无条件强制拉升 (采集器降落/降落恢复期间除外).")).defaultValue(40)).range(30, 300).sliderRange(30, 260).build());
-        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("目标 Y 高度")).description((String)"拉升目标高度：达到此 Y 后停止拉升.")).defaultValue(70)).range(30, 500).sliderRange(50, 500).build());
-        this.d = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("拉升俯仰角")).description((String)"拉升时抬头的俯仰角 (负值=抬头；默认彗星 pitch40 角度 37.72°).")).defaultValue(-37.72).min(-90.0).max(-10.0).sliderMin(-80.0).sliderMax(-20.0).build());
-        this.e = this.a.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"拉升期间每隔这么多秒使用一个烟花加速 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
-        this.f = false;
-        this.g = 0;
-        this.h = 0;
+        this.sgGeneral = this.settings.getDefaultGroup();
+        this.dangerY = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("危险 Y 高度")).description((String)"危险高度：低于此 Y 时无条件强制拉升 (采集器降落/降落恢复期间除外).")).defaultValue(40)).range(30, 300).sliderRange(30, 260).build());
+        this.targetY = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("目标 Y 高度")).description((String)"拉升目标高度：达到此 Y 后停止拉升.")).defaultValue(70)).range(30, 500).sliderRange(50, 500).build());
+        this.pullupPitch = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("拉升俯仰角")).description((String)"拉升时抬头的俯仰角 (负值=抬头；默认彗星 pitch40 角度 37.72°).")).defaultValue(-37.72).min(-90.0).max(-10.0).sliderMin(-80.0).sliderMax(-20.0).build());
+        this.fireworkRocketDelay = this.sgGeneral.add((Setting)((DoubleSetting.Builder)((DoubleSetting.Builder)new DoubleSetting.Builder().name("烟花间隔")).description((String)"拉升期间每隔这么多秒使用一个烟花加速 (秒).")).defaultValue(2.0).min(0.5).sliderRange(0.5, 10.0).build());
+        this.isInDanger = false;
+        this.tickPassed = 0;
+        this.tickWait = 0;
     }
 
     public void onActivate() {
-        this.f = false;
-        this.g = 0;
-        this.h = 0;
+        this.isInDanger = false;
+        this.tickPassed = 0;
+        this.tickWait = 0;
     }
 
     public void onDeactivate() {
-        this.f = false;
+        this.isInDanger = false;
         this.mc.options.forwardKey.setPressed(false);
         ElytraCollectorModule collector = (ElytraCollectorModule)Modules.get().get(ElytraCollectorModule.class);
         if (collector != null) {
@@ -69,45 +69,45 @@ extends Module {
     }
 
     @EventHandler
-    private void a(TickEvent.Pre event) {
+    private void onTickPre(TickEvent.Pre event) {
         if (this.mc.player == null || this.mc.world == null) {
             return;
         }
-        ++this.g;
+        ++this.tickPassed;
         ElytraCollectorModule collector = (ElytraCollectorModule)Modules.get().get(ElytraCollectorModule.class);
         if (collector != null && collector.isActive() && collector.isLandingOrRecovering()) {
-            if (this.f) {
-                this.f = false;
+            if (this.isInDanger) {
+                this.isInDanger = false;
                 collector.setPullUpSuppressed(false);
             }
             return;
         }
-        if (this.f) {
-            if (this.mc.player.getY() >= (double)((Integer)this.c.get()).intValue()) {
-                this.f = false;
+        if (this.isInDanger) {
+            if (this.mc.player.getY() >= (double)((Integer)this.targetY.get()).intValue()) {
+                this.isInDanger = false;
                 if (collector != null) {
                     collector.setPullUpSuppressed(false);
                 }
                 this.info((String)"已升到目标高度，停止拉升.", new Object[0]);
             }
-        } else if (this.mc.player.getY() < (double)((Integer)this.b.get()).intValue()) {
-            this.f = true;
-            this.h = -((int)Math.max(1L, Math.round((Double)this.e.get() * 20.0)));
-            this.info("危险高度: 低于 " + String.valueOf(this.b.get()) + "，强制拉升.", new Object[0]);
+        } else if (this.mc.player.getY() < (double)((Integer)this.dangerY.get()).intValue()) {
+            this.isInDanger = true;
+            this.tickWait = -((int)Math.max(1L, Math.round((Double)this.fireworkRocketDelay.get() * 20.0)));
+            this.info("危险高度: 低于 " + String.valueOf(this.dangerY.get()) + "，强制拉升.", new Object[0]);
             if (collector != null) {
                 collector.abortStorageForPullUp();
                 collector.setPullUpSuppressed(true);
             }
             PathManagers.get().stop();
         }
-        if (!this.f) {
+        if (!this.isInDanger) {
             return;
         }
-        this.b();
+        this.pullup();
     }
 
-    private void b() {
-        this.mc.player.setPitch(((Double)this.d.get()).floatValue());
+    private void pullup() {
+        this.mc.player.setPitch(((Double)this.pullupPitch.get()).floatValue());
         this.mc.options.forwardKey.setPressed(true);
         if (!this.mc.player.isGliding()) {
             if (!this.mc.player.isOnGround()) {
@@ -115,13 +115,13 @@ extends Module {
             }
             return;
         }
-        if ((long)(this.g - this.h) >= Math.max(1L, Math.round((Double)this.e.get() * 20.0))) {
-            this.c();
-            this.h = this.g;
+        if ((long)(this.tickPassed - this.tickWait) >= Math.max(1L, Math.round((Double)this.fireworkRocketDelay.get() * 20.0))) {
+            this.swapFireworkRocket();
+            this.tickWait = this.tickPassed;
         }
     }
 
-    private void c() {
+    private void swapFireworkRocket() {
         FindItemResult fw = InvUtils.findInHotbar((Item[])new Item[]{Items.FIREWORK_ROCKET});
         if (!fw.found()) {
             FindItemResult inv = InvUtils.find((Item[])new Item[]{Items.FIREWORK_ROCKET});

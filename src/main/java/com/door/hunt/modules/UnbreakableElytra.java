@@ -25,34 +25,34 @@ import net.minecraft.item.Items;
 
 public class UnbreakableElytra
 extends Module {
-    private final SettingGroup a;
-    private final Setting<Integer> b;
-    private final Setting<Integer> c;
-    private int d;
+    private final SettingGroup sgGeneral;
+    private final Setting<Integer> protectTime;
+    private final Setting<Integer> duraLimit;
+    private int gildingTick;
 
     public UnbreakableElytra() {
         super(AddonTemplate.CATEGORY, "鞘翅耐久保护", (String)"无限耐久鞘翅：滑翔期间周期检查胸甲鞘翅耐久，低于阈值自动换背包里的新鞘翅。");
-        this.a = this.settings.getDefaultGroup();
-        this.b = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("保护周期")).description((String)"无限耐久检查周期 (tick)。")).defaultValue(16)).range(1, 200).build());
-        this.c = this.a.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("耐久阈值")).description((String)"鞘翅耐久低于此值 (剩余耐久) 时切换。鞘翅总耐久 432。")).defaultValue(100)).range(1, 431).build());
-        this.d = 0;
+        this.sgGeneral = this.settings.getDefaultGroup();
+        this.protectTime = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("保护周期")).description((String)"无限耐久检查周期 (tick)。")).defaultValue(16)).range(1, 200).build());
+        this.duraLimit = this.sgGeneral.add((Setting)((IntSetting.Builder)((IntSetting.Builder)((IntSetting.Builder)new IntSetting.Builder().name("耐久阈值")).description((String)"鞘翅耐久低于此值 (剩余耐久) 时切换。鞘翅总耐久 432。")).defaultValue(100)).range(1, 431).build());
+        this.gildingTick = 0;
     }
 
     public void onActivate() {
-        this.d = 0;
+        this.gildingTick = 0;
     }
 
     @EventHandler
-    private void a(TickEvent.Pre event) {
+    private void onTickPre(TickEvent.Pre event) {
         if (this.mc.player == null) {
             return;
         }
         if (!this.mc.player.isGliding()) {
-            this.d = 0;
+            this.gildingTick = 0;
             return;
         }
-        ++this.d;
-        if (this.d % (Integer)this.b.get() != 0) {
+        ++this.gildingTick;
+        if (this.gildingTick % (Integer)this.protectTime.get() != 0) {
             return;
         }
         ItemStack chest = this.mc.player.getEquippedStack(EquipmentSlot.CHEST);
@@ -61,17 +61,17 @@ extends Module {
         }
         int damage = chest.getDamage();
         int maxDamage = chest.getMaxDamage();
-        if (maxDamage - damage >= (Integer)this.c.get()) {
+        if (maxDamage - damage >= (Integer)this.duraLimit.get()) {
             return;
         }
-        int elytraSlot = this.b();
+        int elytraSlot = this.findElytra();
         if (elytraSlot != -1) {
             InvUtils.move().from(elytraSlot).toArmor(2);
             this.info("无限耐久: 已换上背包里的新鞘翅 (槽 " + elytraSlot + ")。", new Object[0]);
         }
     }
 
-    private int b() {
+    private int findElytra() {
         FindItemResult result = InvUtils.find((Item[])new Item[]{Items.ELYTRA});
         if (result.found() && !result.isArmor()) {
             return result.slot();
